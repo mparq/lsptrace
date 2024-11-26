@@ -28,12 +28,42 @@ type Interceptor struct {
 	gotHeader         bool
 	nextContentLength int
 	scanBuf           *bytes.Buffer
+	in                chan []byte
 	out               chan *RawLSPMessage
 }
 
-func NewInterceptor(out chan *RawLSPMessage) *Interceptor {
+func NewInterceptor() *Interceptor {
 	scanBuf := new(bytes.Buffer)
-	return &Interceptor{scanBuf: scanBuf, out: out}
+	return &Interceptor{scanBuf: scanBuf}
+}
+
+func (t *Interceptor) In(in chan []byte) {
+	t.in = in
+}
+
+func (t *Interceptor) Out(out chan *RawLSPMessage) {
+	t.out = out
+}
+
+func (t *Interceptor) Run() {
+	for read := range t.in {
+		t.scanBuf.Write(read)
+		var err error
+		for {
+			more, err := t.next()
+			if err != nil {
+				break
+			}
+			if !more {
+				break
+			}
+		}
+		if err != nil {
+			log.Printf("interceptor:run Error parsing next %s \n", err)
+		}
+	}
+	// close out channel after in closes
+	close(t.out)
 }
 
 // next advances in the rpc protocol read state
