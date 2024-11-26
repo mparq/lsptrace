@@ -1,21 +1,15 @@
 package parse
 
-import (
-	"sync"
-)
-
 type LSPTracer struct {
 	from   string
-	rMutex sync.Mutex
-	// map from request id to method to map corresponding responses
-	rMap map[int]string
+	reqMap *RequestMap
 }
 
-func NewLSPTracer(sentFrom string) *LSPTracer {
+func NewLSPTracer(sentFrom string, reqMap *RequestMap) *LSPTracer {
 	if len(sentFrom) <= 0 {
 		panic("assert: lsp tracer must specify 'sentFrom' source.")
 	}
-	return &LSPTracer{from: sentFrom, rMap: make(map[int]string)}
+	return &LSPTracer{from: sentFrom, reqMap: reqMap}
 }
 
 func (t *LSPTracer) Parse(c chan *RawLSPMessage, out chan LSPTrace) {
@@ -36,15 +30,9 @@ func (t *LSPTracer) Parse(c chan *RawLSPMessage, out chan LSPTrace) {
 }
 
 func (t *LSPTracer) saveRequestMethod(trace LSPTrace) {
-	t.rMutex.Lock()
-	t.rMap[int(*trace.Id)] = *trace.Method
-	t.rMutex.Unlock()
+	t.reqMap.Insert(*trace.Id, *trace.Method)
 }
 
 func (t *LSPTracer) popRequestMethod(trace LSPTrace) string {
-	t.rMutex.Lock()
-	method := t.rMap[int(*trace.Id)]
-	delete(t.rMap, int(*trace.Id))
-	t.rMutex.Unlock()
-	return method
+	return t.reqMap.Pop(*trace.Id)
 }

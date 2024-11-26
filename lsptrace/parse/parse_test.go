@@ -9,7 +9,7 @@ func TestParse(t *testing.T) {
 	c := make(chan *RawLSPMessage)
 	tc := make(chan LSPTrace)
 
-	tracer := NewLSPTracer("client")
+	tracer := NewLSPTracer("client", NewRequestMap())
 	go tracer.Parse(c, tc)
 	go func() {
 		id := int64(64)
@@ -25,18 +25,29 @@ func TestParse(t *testing.T) {
 func TestParseReqResponse(t *testing.T) {
 	c := make(chan *RawLSPMessage)
 	tc := make(chan LSPTrace)
+	sc := make(chan *RawLSPMessage)
+	stc := make(chan LSPTrace)
 
-	tracer := NewLSPTracer("client")
+	reqMap := NewRequestMap()
+	tracer := NewLSPTracer("client", reqMap)
+	tracer2 := NewLSPTracer("server", reqMap)
 	go tracer.Parse(c, tc)
+	go tracer2.Parse(sc, stc)
 	go func() {
 		id := int64(64)
 		method := "initialize"
 		c <- &RawLSPMessage{Id: &id, Method: &method, Params: json.RawMessage{}}
 		id = int64(64)
-		c <- &RawLSPMessage{Id: &id, Result: json.RawMessage{}}
+		sc <- &RawLSPMessage{Id: &id, Result: json.RawMessage{}}
 		close(c)
+		close(sc)
 	}()
-	for trace := range tc {
-		t.Log(trace)
+	clientTrace := <-tc
+	serverTrace := <-stc
+	t.Log(clientTrace)
+	t.Log(serverTrace)
+	if *clientTrace.Method != *serverTrace.Method {
+		t.Fatal("Method should be matched on response trace to the corresponding request trace.")
 	}
+
 }

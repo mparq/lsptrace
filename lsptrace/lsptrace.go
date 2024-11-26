@@ -171,8 +171,9 @@ func main() {
 	_ = clientIntercept // remove
 	_ = serverIntercept // remove
 
-	clientTracer := parse.NewLSPTracer("client")
-	serverTracer := parse.NewLSPTracer("server")
+	reqMap := parse.NewRequestMap()
+	clientTracer := parse.NewLSPTracer("client", reqMap)
+	serverTracer := parse.NewLSPTracer("server", reqMap)
 
 	go clientTracer.Parse(c, tc)
 	go serverTracer.Parse(sc, stc)
