@@ -1,4 +1,4 @@
-package parse
+package internal
 
 import (
 	"encoding/json"
@@ -10,7 +10,9 @@ func TestParse(t *testing.T) {
 	tc := make(chan LSPTrace)
 
 	tracer := NewLSPTracer("client", NewRequestMap())
-	go tracer.Parse(c, tc)
+	tracer.In(c)
+	tracer.Out(tc)
+	go tracer.Run()
 	go func() {
 		id := int64(64)
 		method := "initialize"
@@ -31,8 +33,12 @@ func TestParseReqResponse(t *testing.T) {
 	reqMap := NewRequestMap()
 	tracer := NewLSPTracer("client", reqMap)
 	tracer2 := NewLSPTracer("server", reqMap)
-	go tracer.Parse(c, tc)
-	go tracer2.Parse(sc, stc)
+	tracer.In(c)
+	tracer.Out(tc)
+	tracer2.In(sc)
+	tracer2.Out(stc)
+	go tracer.Run()
+	go tracer2.Run()
 	go func() {
 		id := int64(64)
 		method := "initialize"

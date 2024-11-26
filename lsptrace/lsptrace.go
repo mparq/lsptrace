@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"log"
-	"lsptrace/parse"
+	"lsptrace/internal"
 	"net"
 	"os"
 	"os/exec"
@@ -14,8 +14,6 @@ import (
 	"strings"
 	"syscall"
 )
-
-var _ parse.RawLSPMessage
 
 const (
 	HELP_MESSAGE = `
@@ -105,7 +103,7 @@ func main() {
 
 	// in named pipe flow, expectation is that we start server
 	// the server will respond with a json message over stdout {"pipeName": "..."}
-	// the client should parse this message and then connect to the named pipe in the message
+	// the client should internal.this message and then connect to the named pipe in the message
 	// from that point, all client/server lsp comms go through the pipe
 
 	stdout, err := execCmd.StdoutPipe()
@@ -161,22 +159,26 @@ func main() {
 	defer serv_conn.Close()
 	log.Println("Connected to original pipe.")
 
-	c := make(chan *parse.RawLSPMessage)
-	sc := make(chan *parse.RawLSPMessage)
-	tc := make(chan parse.LSPTrace, 5)
-	stc := make(chan parse.LSPTrace, 5)
+	c := make(chan *internal.RawLSPMessage)
+	sc := make(chan *internal.RawLSPMessage)
+	tc := make(chan internal.LSPTrace, 5)
+	stc := make(chan internal.LSPTrace, 5)
 
-	clientIntercept := parse.NewInterceptor(c)
-	serverIntercept := parse.NewInterceptor(sc)
+	clientIntercept := internal.NewInterceptor(c)
+	serverIntercept := internal.NewInterceptor(sc)
 	_ = clientIntercept // remove
 	_ = serverIntercept // remove
 
-	reqMap := parse.NewRequestMap()
-	clientTracer := parse.NewLSPTracer("client", reqMap)
-	serverTracer := parse.NewLSPTracer("server", reqMap)
+	reqMap := internal.NewRequestMap()
+	clientTracer := internal.NewLSPTracer("client", reqMap)
+	serverTracer := internal.NewLSPTracer("server", reqMap)
+	clientTracer.In(c)
+	clientTracer.Out(tc)
+	serverTracer.In(sc)
+	serverTracer.Out(stc)
 
-	go clientTracer.Parse(c, tc)
-	go serverTracer.Parse(sc, stc)
+	go clientTracer.Run()
+	go serverTracer.Run()
 
 	go func() {
 		for trace := range tc {
@@ -192,9 +194,10 @@ func main() {
 	// errbuf := NewPrefixWriter("!<-", f)
 	// Non-blockingly echo command output to terminal
 	// go copyWith2Dest(stdin, f, os.Stdin)
-	go io.Copy(io.MultiWriter(serv_conn, log.Writer()), conn)
+	// NOTE: can write raw json rpc to log by using log.Writer() in io.MultiWriter args
+	go io.Copy(io.MultiWriter(serv_conn, clientIntercept), conn)
 	//go copyWith2Dest(os.Stdout, f, stdout)
-	go io.Copy(io.MultiWriter(conn, log.Writer()), serv_conn)
+	go io.Copy(io.MultiWriter(conn, serverIntercept), serv_conn)
 	// go copyWith2Dest(os.Stderr, f, stderr)
 	// go io.Copy(io.MultiWriter(os.Stderr, errbuf), stderr)
 

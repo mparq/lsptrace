@@ -1,4 +1,4 @@
-package parse
+package internal
 
 import (
 	"io"
