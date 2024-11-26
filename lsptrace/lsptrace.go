@@ -5,13 +5,17 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"lsptrace/parse"
 	"net"
 	"os"
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 )
+
+var _ parse.RawLSPMessage
 
 const (
 	HELP_MESSAGE = `
@@ -28,41 +32,88 @@ func checkError(err error) {
 	}
 }
 
+func setupLogger() (func(), error) {
+	// TODO: debug file should be parameterized.
+	debugF, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/debug.log", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
+	log.SetOutput(debugF)
+	return func() {
+		debugF.Close()
+	}, err
+}
+
+func handleInterrupt(cleanup func()) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		if cleanup != nil {
+			cleanup()
+		}
+		os.Exit(1)
+	}()
+}
+
+// check if args suggest that command is being run from vscode
+// HACK: this is for now checking just on --telemetryLevel
+// which is passed by vscode-sharp when running roslyn language server
+func isVsCodeCommand(args []string) {
+	for _, arg := range args {
+		if strings.Contains(arg, "--telemetryLevel") {
+		}
+	}
+}
+
 func main() {
 	if len(os.Args) < 2 || os.Args[1] == "-h" {
 		log.Fatal(HELP_MESSAGE)
 	}
 
-	tmpSockDir := filepath.Join(os.TempDir(), "lsp-trace-proxy", "sock")
+	roslynDll := ""
+	if o, found := os.LookupEnv("LSPTRACE_ROSLYN_LS_DLL"); found {
+		roslynDll = o
+	}
 
-	// TODO: debug file should be parameterized.
-	debugF, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/debug.log", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
-	checkError(err)
-	defer debugF.Close()
-	log.SetOutput(debugF)
+	logCloser, err := setupLogger()
+	defer logCloser()
+	// TODO: handle interrupts properly and cleanup
+	handleInterrupt(nil)
 
-	cmd := os.Args[1]
-	execCmd := exec.Command(cmd, os.Args[2:]...)
+	log.Printf("debug log opened...\n")
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	go func() {
-		<-c
-		os.Exit(1)
-	}()
-	// Create stdout, stderr streams of type io.Reader
-	//stdin, err := execCmd.StdinPipe()
-	//checkError(err)
+	// cmd := os.Args[1]
+	cmd := "dotnet"
+	roslynDll = filepath.Join(
+		"/Users/mparq/code",
+		"ext",
+		"roslyn",
+		"artifacts",
+		"bin",
+		"Microsoft.CodeAnalysis.LanguageServer",
+		"Debug",
+		"net8.0",
+		"Microsoft.CodeAnalysis.LanguageServer.dll",
+	)
+
+	// for vscode, this binary is expected to run the language server and we are just passed the args
+	// as opposed to the 1st arg being the ls command to run
+	// args := append([]string{roslynDll}, os.Args[2:]...)
+	args := append([]string{roslynDll}, os.Args[1:]...)
+	log.Printf(strings.Join(args, " ") + "\n")
+	execCmd := exec.Command(cmd, args...)
+
+	log.Printf("execCmd created.: %s\n", execCmd.String())
+
+	// in named pipe flow, expectation is that we start server
+	// the server will respond with a json message over stdout {"pipeName": "..."}
+	// the client should parse this message and then connect to the named pipe in the message
+	// from that point, all client/server lsp comms go through the pipe
+
 	stdout, err := execCmd.StdoutPipe()
 	checkError(err)
-	//stderr, err := execCmd.StderrPipe()
-	//checkError(err)
 
 	// Start command
 	err = execCmd.Start()
 	checkError(err)
-
-	log.Printf("debug log opened...\n")
 
 	f, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/out.lsptrace", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	checkError(err)
@@ -73,16 +124,20 @@ func main() {
 	pipeName, err := PollForInitialPipeMsg(stdout)
 	checkError(err)
 	log.Printf("Found initial pipeName: %s\n", pipeName)
-	interceptPipeName := filepath.Join(tmpSockDir, filepath.Base(pipeName))
 
-	// create a new pipe and listen on it
+	// create a new intercept pipe which will be sent to client to connect to instead
+	tmpDir, err := os.MkdirTemp("", "lsp-trace-proxy")
+	checkError(err)
+	log.Printf("Created tmp dir for intercept socket: %s", tmpDir)
+	interceptPipeName := filepath.Join(tmpDir, filepath.Base(pipeName))
 	l, err := net.Listen("unix", interceptPipeName)
 	checkError(err)
-	defer l.Close()
+	defer func() {
+		l.Close()
+		os.RemoveAll(tmpDir)
+	}()
 	log.Printf("Created intercept pipe name: %s\n", interceptPipeName)
 	log.Printf("Created intercept pipe listener\n")
-
-	// pass new pipe to language client for it to connect to
 	interceptPipeMsg := PipeMsg{
 		PipeName: interceptPipeName,
 	}
@@ -106,14 +161,39 @@ func main() {
 	defer serv_conn.Close()
 	log.Println("Connected to original pipe.")
 
-	in := NewPrefixWriter("->")
-	out := NewPrefixWriter("<-")
+	c := make(chan *parse.RawLSPMessage)
+	sc := make(chan *parse.RawLSPMessage)
+	tc := make(chan parse.LSPTrace, 5)
+	stc := make(chan parse.LSPTrace, 5)
+
+	clientIntercept := parse.NewInterceptor(c)
+	serverIntercept := parse.NewInterceptor(sc)
+	_ = clientIntercept // remove
+	_ = serverIntercept // remove
+
+	clientTracer := parse.NewLSPTracer("client")
+	serverTracer := parse.NewLSPTracer("server")
+
+	go clientTracer.Parse(c, tc)
+	go serverTracer.Parse(sc, stc)
+
+	go func() {
+		for trace := range tc {
+			log.Println(trace)
+		}
+	}()
+	go func() {
+		for trace := range stc {
+			log.Println(trace)
+		}
+	}()
+
 	// errbuf := NewPrefixWriter("!<-", f)
 	// Non-blockingly echo command output to terminal
 	// go copyWith2Dest(stdin, f, os.Stdin)
-	go io.Copy(io.MultiWriter(serv_conn, in), conn)
+	go io.Copy(io.MultiWriter(serv_conn, log.Writer()), conn)
 	//go copyWith2Dest(os.Stdout, f, stdout)
-	go io.Copy(io.MultiWriter(conn, out), serv_conn)
+	go io.Copy(io.MultiWriter(conn, log.Writer()), serv_conn)
 	// go copyWith2Dest(os.Stderr, f, stderr)
 	// go io.Copy(io.MultiWriter(os.Stderr, errbuf), stderr)
 

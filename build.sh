@@ -4,7 +4,9 @@ rm -r bin
 mkdir -p bin
 
 echo "building lsptrace..."
-go build -o bin ./lsptrace/lsptrace.go
+pushd lsptrace
+go build -o ../bin .
+popd
 echo "building dummyclient..."
 go build -o bin ./dummyclient/dummy-client.go
 echo "building dummyserver..."

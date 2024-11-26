@@ -1,0 +1,6 @@
+Content-Length: 146
+
+{"jsonrpc":"2.0","id":62,"method":"textDocument/codeLens","params":{"textDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Program.cs"}}}Content-Length: 37
+
+{"jsonrpc":"2.0","id":62,"result":[]}
+

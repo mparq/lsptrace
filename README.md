@@ -23,3 +23,13 @@ Maybe pipe-delimited would work, also ensure rawEvent has no new lines so that e
 timestamp|method|msgKind|serverName|rawEvent
 ```
 
+## with vscode
+
+unlike roslyn.nvim, in vscode-sharp, the configuration to modify the language server executable is split between executable and args and extra args to pass are not supported. as a hack for this case, the LSPTRACE_ROSLYN_DLL environment variable should be used, and lsptrace will use that
+
+## todos
+
+- [ ] think about how to get this working with vscode which separates out the dotnet exe into its own config and also uses that for other dotnet commands
+- [ ] output log trace format
+
+
