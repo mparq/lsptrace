@@ -1,6 +1,9 @@
 package internal
 
-import "sync"
+import (
+	"log"
+	"sync"
+)
 
 type RequestMap struct {
 	rMutex sync.Mutex
@@ -25,7 +28,9 @@ func (m *RequestMap) Pop(reqid int64) string {
 	defer m.rMutex.Unlock()
 	method, ok := m.rMap[reqid]
 	if !ok || len(method) < 1 {
-		panic("RequestMap: reqid did not exist in map. Pop must be called after Insert.")
+		// TODO: this shouldn't happen but I see it happen. why?
+		log.Printf("RequestMap: reqid [%v] did not exist in map. Pop must be called after Insert.", reqid)
+		return ""
 	}
 	delete(m.rMap, reqid)
 	return method

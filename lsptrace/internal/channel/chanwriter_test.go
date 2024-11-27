@@ -11,8 +11,7 @@ func TestChanWriter(t *testing.T) {
 	// assert string written out from writer is same
 	test := []byte("test string")
 	c := make(chan []byte)
-	wr := NewWriter()
-	wr.Out(c)
+	wr := NewWriter(c)
 
 	go func() {
 		wr.Write([]byte(test))

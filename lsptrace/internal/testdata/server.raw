@@ -1,0 +1,291 @@
+Content-Length: 116
+
+{"jsonrpc":"2.0","method":"window/logMessage","params":{"type":3,"message":"[Program] Language server initialized"}}Content-Length: 2757
+
+{"jsonrpc":"2.0","id":0,"result":{"capabilities":{"_vs_onAutoInsertProvider":{"_vs_triggerCharacters":["\u0027","/","\n"]},"textDocumentSync":{"openClose":true,"change":2},"completionProvider":{"triggerCharacters":["\u0022","(",":","[","\\","{","#",".","\u003E"," ","~","\u003C"],"allCommitCharacters":[" ","{","}","[","]","(",")",".",",",":",";","\u002B","-","*","/","%","\u0026","|","^","!","~","=","\u003C","\u003E","?","@","#","\u0027","\u0022","\\"],"resolveProvider":true},"hoverProvider":true,"signatureHelpProvider":{"triggerCharacters":["(",","]},"definitionProvider":true,"typeDefinitionProvider":true,"implementationProvider":true,"referencesProvider":{"workDoneProgress":true},"documentHighlightProvider":true,"documentSymbolProvider":true,"codeActionProvider":{"codeActionKinds":["quickfix","refactor"],"resolveProvider":true},"codeLensProvider":{"resolveProvider":true},"documentFormattingProvider":true,"documentRangeFormattingProvider":true,"documentOnTypeFormattingProvider":{"firstTriggerCharacter":"}","moreTriggerCharacter":[";","\n"]},"renameProvider":{"prepareProvider":true},"foldingRangeProvider":true,"executeCommandProvider":{"commands":[]},"semanticTokensProvider":{"legend":{"tokenTypes":["namespace","type","class","enum","interface","struct","typeParameter","parameter","variable","property","enumMember","event","function","method","macro","keyword","modifier","comment","string","number","regexp","operator","decorator","constant","controlKeyword","delegate","excludedCode","extensionMethod","field","jsonArray","jsonComment","jsonConstructorName","jsonKeyword","jsonNumber","jsonObject","jsonOperator","jsonPropertyName","jsonPunctuation","jsonString","jsonText","label","module","operatorOverloaded","preprocessorText","punctuation","recordClass","recordStruct","regexAlternation","regexAnchor","regexCharacterClass","regexComment","regexGrouping","regexOtherEscape","regexQuantifier","regexSelfEscapedCharacter","regexText","stringEscapeCharacter","stringVerbatim","testCodeMarkdown","text","whitespace","xmlDocCommentAttributeName","xmlDocCommentAttributeQuotes","xmlDocCommentAttributeValue","xmlDocCommentCDataSection","xmlDocCommentComment","xmlDocCommentDelimiter","xmlDocCommentEntityReference","xmlDocCommentName","xmlDocCommentProcessingInstruction","xmlDocCommentText","xmlLiteralAttributeName","xmlLiteralAttributeQuotes","xmlLiteralAttributeValue","xmlLiteralCDataSection","xmlLiteralComment","xmlLiteralDelimiter","xmlLiteralEmbeddedExpression","xmlLiteralEntityReference","xmlLiteralName","xmlLiteralProcessingInstruction","xmlLiteralText"],"tokenModifiers":["static","ReassignedVariable","deprecated"]},"range":true,"full":false},"inlayHintProvider":{"resolveProvider":true},"workspaceSymbolProvider":true}}}Content-Length: 180
+
+{"jsonrpc":"2.0","id":2,"method":"client/registerCapability","params":{"registrations":[{"id":"2a879f7d-feaa-43fd-8437-8ab56c784d69","method":"workspace/didChangeConfiguration"}]}}Content-Length: 5435
+
+{"jsonrpc":"2.0","id":3,"method":"workspace/configuration","params":{"items":[{"section":"csharp|symbol_search.dotnet_search_reference_assemblies"},{"section":"visual_basic|symbol_search.dotnet_search_reference_assemblies"},{"section":"csharp|type_members.dotnet_member_insertion_location"},{"section":"visual_basic|type_members.dotnet_member_insertion_location"},{"section":"csharp|type_members.dotnet_property_generation_behavior"},{"section":"visual_basic|type_members.dotnet_property_generation_behavior"},{"section":"csharp|completion.dotnet_show_name_completion_suggestions"},{"section":"visual_basic|completion.dotnet_show_name_completion_suggestions"},{"section":"csharp|completion.dotnet_provide_regex_completions"},{"section":"visual_basic|completion.dotnet_provide_regex_completions"},{"section":"csharp|completion.dotnet_show_completion_items_from_unimported_namespaces"},{"section":"visual_basic|completion.dotnet_show_completion_items_from_unimported_namespaces"},{"section":"csharp|completion.dotnet_trigger_completion_in_argument_lists"},{"section":"visual_basic|completion.dotnet_trigger_completion_in_argument_lists"},{"section":"csharp|quick_info.dotnet_show_remarks_in_quick_info"},{"section":"visual_basic|quick_info.dotnet_show_remarks_in_quick_info"},{"section":"navigation.dotnet_navigate_to_decompiled_sources"},{"section":"csharp|highlighting.dotnet_highlight_related_json_components"},{"section":"visual_basic|highlighting.dotnet_highlight_related_json_components"},{"section":"csharp|highlighting.dotnet_highlight_related_regex_components"},{"section":"visual_basic|highlighting.dotnet_highlight_related_regex_components"},{"section":"csharp|inlay_hints.dotnet_enable_inlay_hints_for_parameters"},{"section":"visual_basic|inlay_hints.dotnet_enable_inlay_hints_for_parameters"},{"section":"csharp|inlay_hints.dotnet_enable_inlay_hints_for_literal_parameters"},{"section":"visual_basic|inlay_hints.dotnet_enable_inlay_hints_for_literal_parameters"},{"section":"csharp|inlay_hints.dotnet_enable_inlay_hints_for_indexer_parameters"},{"section":"visual_basic|inlay_hints.dotnet_enable_inlay_hints_for_indexer_parameters"},{"section":"csharp|inlay_hints.dotnet_enable_inlay_hints_for_object_creation_parameters"},{"section":"visual_basic|inlay_hints.dotnet_enable_inlay_hints_for_object_creation_parameters"},{"section":"csharp|inlay_hints.dotnet_enable_inlay_hints_for_other_parameters"},{"section":"visual_basic|inlay_hints.dotnet_enable_inlay_hints_for_other_parameters"},{"section":"csharp|inlay_hints.dotnet_suppress_inlay_hints_for_parameters_that_differ_only_by_suffix"},{"section":"visual_basic|inlay_hints.dotnet_suppress_inlay_hints_for_parameters_that_differ_only_by_suffix"},{"section":"csharp|inlay_hints.dotnet_suppress_inlay_hints_for_parameters_that_match_method_intent"},{"section":"visual_basic|inlay_hints.dotnet_suppress_inlay_hints_for_parameters_that_match_method_intent"},{"section":"csharp|inlay_hints.dotnet_suppress_inlay_hints_for_parameters_that_match_argument_name"},{"section":"visual_basic|inlay_hints.dotnet_suppress_inlay_hints_for_parameters_that_match_argument_name"},{"section":"csharp|inlay_hints.csharp_enable_inlay_hints_for_types"},{"section":"visual_basic|inlay_hints.csharp_enable_inlay_hints_for_types"},{"section":"csharp|inlay_hints.csharp_enable_inlay_hints_for_implicit_variable_types"},{"section":"visual_basic|inlay_hints.csharp_enable_inlay_hints_for_implicit_variable_types"},{"section":"csharp|inlay_hints.csharp_enable_inlay_hints_for_lambda_parameter_types"},{"section":"visual_basic|inlay_hints.csharp_enable_inlay_hints_for_lambda_parameter_types"},{"section":"csharp|inlay_hints.csharp_enable_inlay_hints_for_implicit_object_creation"},{"section":"visual_basic|inlay_hints.csharp_enable_inlay_hints_for_implicit_object_creation"},{"section":"csharp|inlay_hints.csharp_enable_inlay_hints_for_collection_expressions"},{"section":"visual_basic|inlay_hints.csharp_enable_inlay_hints_for_collection_expressions"},{"section":"csharp|code_style.formatting.indentation_and_spacing.tab_width"},{"section":"visual_basic|code_style.formatting.indentation_and_spacing.tab_width"},{"section":"csharp|code_style.formatting.indentation_and_spacing.indent_size"},{"section":"visual_basic|code_style.formatting.indentation_and_spacing.indent_size"},{"section":"csharp|code_style.formatting.indentation_and_spacing.indent_style"},{"section":"visual_basic|code_style.formatting.indentation_and_spacing.indent_style"},{"section":"csharp|code_style.formatting.new_line.end_of_line"},{"section":"visual_basic|code_style.formatting.new_line.end_of_line"},{"section":"code_style.formatting.new_line.insert_final_newline"},{"section":"csharp|background_analysis.dotnet_analyzer_diagnostics_scope"},{"section":"visual_basic|background_analysis.dotnet_analyzer_diagnostics_scope"},{"section":"csharp|background_analysis.dotnet_compiler_diagnostics_scope"},{"section":"visual_basic|background_analysis.dotnet_compiler_diagnostics_scope"},{"section":"csharp|code_lens.dotnet_enable_references_code_lens"},{"section":"visual_basic|code_lens.dotnet_enable_references_code_lens"},{"section":"csharp|code_lens.dotnet_enable_tests_code_lens"},{"section":"visual_basic|code_lens.dotnet_enable_tests_code_lens"},{"section":"projects.dotnet_binary_log_path"},{"section":"projects.dotnet_enable_automatic_restore"},{"section":"navigation.dotnet_navigate_to_source_link_and_embedded_sources"}]}}Content-Length: 1884
+
+{"jsonrpc":"2.0","id":4,"method":"client/registerCapability","params":{"registrations":[{"id":"10d73e55-57b9-4d20-b1f2-de14ff34a75c","method":"textDocument/diagnostic","registerOptions":{"identifier":"XamlDiagnostics","interFileDependencies":true,"workspaceDiagnostics":false}},{"id":"96d54d9d-0f63-45ca-810b-e5546820ca3d","method":"textDocument/diagnostic","registerOptions":{"identifier":"DocumentAnalyzerSemantic","interFileDependencies":true,"workspaceDiagnostics":false}},{"id":"13d94265-b40d-4dd8-8027-a05ea5e59daa","method":"textDocument/diagnostic","registerOptions":{"identifier":"DocumentCompilerSemantic","interFileDependencies":true,"workspaceDiagnostics":false}},{"id":"f5136287-90f3-4778-a82e-a4a44563a438","method":"textDocument/diagnostic","registerOptions":{"identifier":"syntax","interFileDependencies":true,"workspaceDiagnostics":false}},{"id":"6aa0d3b8-84c0-4329-9b6d-0366693f169a","method":"textDocument/diagnostic","registerOptions":{"identifier":"DocumentAnalyzerSyntax","interFileDependencies":true,"workspaceDiagnostics":false}},{"id":"8d7e273e-d7e1-4ce4-9d7b-efc843a86f76","method":"textDocument/diagnostic","registerOptions":{"identifier":"NonLocal","interFileDependencies":true,"workspaceDiagnostics":false}},{"id":"db68b1b3-7dba-45de-aeca-a2829f144618","method":"textDocument/diagnostic","registerOptions":{"workDoneProgress":true,"identifier":"HotReloadDiagnostics","interFileDependencies":true,"workspaceDiagnostics":true}},{"id":"a73ed75c-a49a-43a6-b7db-6ac2f122f548","method":"textDocument/diagnostic","registerOptions":{"workDoneProgress":true,"identifier":"enc","interFileDependencies":true,"workspaceDiagnostics":true}},{"id":"e9f5dc04-e95d-4d4d-b1bb-a49c736d032c","method":"textDocument/diagnostic","registerOptions":{"workDoneProgress":true,"identifier":"WorkspaceDocumentsAndProject","interFileDependencies":true,"workspaceDiagnostics":true}}]}}Content-Length: 85
+
+{"jsonrpc":"2.0","id":16,"error":{"code":-32800,"message":"The task was cancelled."}}Content-Length: 84
+
+{"jsonrpc":"2.0","id":2,"error":{"code":-32800,"message":"The task was cancelled."}}Content-Length: 85
+
+{"jsonrpc":"2.0","id":17,"error":{"code":-32800,"message":"The task was cancelled."}}Content-Length: 299
+
+{"jsonrpc":"2.0","id":1,"result":{"_vs_projectContexts":[{"_vs_label":"Miscellaneous Files","_vs_id":"aacc891a-126f-45d6-ad89-980a20039cda|LspMiscellaneousFilesWorkspace Files Project for /Users/mparq/code/vocabdex_blazor/Program.cs","_vs_kind":2,"_vs_is_miscellaneous":true}],"_vs_defaultIndex":0}}Content-Length: 44
+
+{"jsonrpc":"2.0","id":5,"result":{"ids":[]}}Content-Length: 44
+
+{"jsonrpc":"2.0","id":6,"result":{"ids":[]}}Content-Length: 44
+
+{"jsonrpc":"2.0","id":7,"result":{"ids":[]}}Content-Length: 44
+
+{"jsonrpc":"2.0","id":4,"result":{"ids":[]}}Content-Length: 44
+
+{"jsonrpc":"2.0","id":8,"result":{"ids":[]}}Content-Length: 44
+
+{"jsonrpc":"2.0","id":9,"result":{"ids":[]}}Content-Length: 45
+
+{"jsonrpc":"2.0","id":10,"result":{"ids":[]}}Content-Length: 45
+
+{"jsonrpc":"2.0","id":11,"result":{"ids":[]}}Content-Length: 45
+
+{"jsonrpc":"2.0","id":12,"result":{"ids":[]}}Content-Length: 45
+
+{"jsonrpc":"2.0","id":13,"result":{"ids":[]}}Content-Length: 45
+
+{"jsonrpc":"2.0","id":14,"result":{"ids":[]}}Content-Length: 45
+
+{"jsonrpc":"2.0","id":15,"result":{"ids":[]}}Content-Length: 39
+
+{"jsonrpc":"2.0","id":18,"result":null}Content-Length: 39
+
+{"jsonrpc":"2.0","id":28,"result":null}Content-Length: 39
+
+{"jsonrpc":"2.0","id":23,"result":null}Content-Length: 39
+
+{"jsonrpc":"2.0","id":24,"result":null}Content-Length: 47
+
+{"jsonrpc":"2.0","id":27,"result":{"items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":29,"result":{"items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":25,"result":{"items":[]}}Content-Length: 140
+
+{"jsonrpc":"2.0","method":"window/logMessage","params":{"type":3,"message":"[LanguageServerProjectSystem] Loading or reloading 1 projects"}}Content-Length: 126
+
+{"jsonrpc":"2.0","method":"window/logMessage","params":{"type":3,"message":"[LanguageServerProjectSystem] Binary log path: "}}Content-Length: 37
+
+{"jsonrpc":"2.0","id":30,"result":[]}Content-Length: 128
+
+{"jsonrpc":"2.0","id":26,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: enc):1","items":[]}}Content-Length: 125
+
+{"jsonrpc":"2.0","id":33,"result":[{"startLine":13,"startCharacter":37,"endLine":18,"endCharacter":1,"collapsedText":"..."}]}Content-Length: 37
+
+{"jsonrpc":"2.0","id":35,"result":[]}Content-Length: 37
+
+{"jsonrpc":"2.0","id":34,"result":[]}Content-Length: 37
+
+{"jsonrpc":"2.0","id":32,"result":[]}Content-Length: 149
+
+{"jsonrpc":"2.0","id":20,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: DocumentCompilerSemantic):1","items":[]}}Content-Length: 131
+
+{"jsonrpc":"2.0","id":21,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: syntax):1","items":[]}}Content-Length: 147
+
+{"jsonrpc":"2.0","id":22,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: DocumentAnalyzerSyntax):1","items":[]}}Content-Length: 149
+
+{"jsonrpc":"2.0","id":19,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: DocumentAnalyzerSemantic):1","items":[]}}Content-Length: 36
+
+{"jsonrpc":"2.0","id":3,"result":[]}Content-Length: 37
+
+{"jsonrpc":"2.0","id":36,"result":[]}Content-Length: 1213
+
+{"jsonrpc":"2.0","id":31,"result":{"data":[0,0,5,15,0,0,6,15,8,0,0,15,1,21,0,0,1,10,8,0,0,10,1,44,0,2,0,3,15,0,0,4,7,8,0,0,8,1,21,0,0,2,14,8,0,0,14,1,21,0,0,1,13,8,0,0,13,1,44,0,0,1,4,15,0,0,4,1,44,0,0,1,1,44,0,2,0,33,17,0,1,0,7,8,0,0,7,1,21,0,0,1,8,8,0,0,8,1,21,0,0,1,18,8,0,0,18,1,44,0,0,1,1,44,0,1,4,1,21,0,0,1,30,8,0,0,30,1,44,0,0,1,1,44,0,0,1,1,44,0,2,0,3,15,0,0,4,3,8,0,0,4,1,21,0,0,2,7,8,0,0,7,1,21,0,0,1,5,8,0,0,5,1,44,0,0,1,1,44,0,0,1,1,44,0,4,0,39,17,0,1,0,2,24,0,0,3,1,44,0,0,1,1,21,0,0,1,3,8,0,0,3,1,21,0,0,1,11,8,0,0,11,1,21,0,0,1,13,8,0,0,13,1,44,0,0,1,1,44,0,0,1,1,44,0,1,0,1,44,0,1,4,3,8,0,0,3,1,21,0,0,1,19,8,0,0,19,1,44,0,0,1,8,18,0,0,8,1,44,0,0,2,20,8,0,0,20,1,44,0,0,2,4,15,0,0,4,1,44,0,0,1,1,44,0,1,4,127,17,0,1,4,3,8,0,0,3,1,21,0,0,1,7,8,0,0,7,1,44,0,0,1,1,44,0,0,1,1,44,0,1,0,1,44,0,2,0,3,8,0,0,3,1,21,0,0,1,19,8,0,0,19,1,44,0,0,1,1,44,0,0,1,1,44,0,3,0,3,8,0,0,3,1,21,0,0,1,14,8,0,0,14,1,44,0,0,1,1,44,0,0,1,1,44,0,2,0,3,8,0,0,3,1,21,0,0,1,15,8,0,0,15,1,44,0,0,1,1,44,0,0,1,1,44,0,1,0,3,8,0,0,3,1,21,0,0,1,18,8,0,0,18,1,44,0,0,1,3,8,0,0,3,1,44,0,0,1,1,44,0,0,1,1,44,0,1,4,1,21,0,0,1,30,8,0,0,30,1,44,0,0,1,1,44,0,0,1,1,44,0,2,0,3,8,0,0,3,1,21,0,0,1,3,8,0,0,3,1,44,0,0,1,1,44,0,0,1,1,44,0]}}Content-Length: 75
+
+{"jsonrpc":"2.0","id":5,"method":"workspace/inlayHint/refresh","params":[]}Content-Length: 320
+
+{"jsonrpc":"2.0","id":6,"method":"client/registerCapability","params":{"registrations":[{"id":"b38dec3d-93a1-46f0-9433-eeb6d5928212","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///Users/mparq/code/vocabdex_blazor","pattern":"**/*{.cs,.razor,.cshtml}"}}]}}]}}Content-Length: 80
+
+{"jsonrpc":"2.0","id":7,"method":"workspace/semanticTokens/refresh","params":[]}Content-Length: 74
+
+{"jsonrpc":"2.0","id":8,"method":"workspace/codeLens/refresh","params":[]}Content-Length: 76
+
+{"jsonrpc":"2.0","id":9,"method":"workspace/diagnostic/refresh","params":[]}Content-Length: 39
+
+{"jsonrpc":"2.0","id":37,"result":null}Content-Length: 39
+
+{"jsonrpc":"2.0","id":43,"result":null}Content-Length: 39
+
+{"jsonrpc":"2.0","id":42,"result":null}Content-Length: 39
+
+{"jsonrpc":"2.0","id":45,"result":null}Content-Length: 300
+
+{"jsonrpc":"2.0","id":46,"result":{"_vs_projectContexts":[{"_vs_label":"Miscellaneous Files","_vs_id":"aacc891a-126f-45d6-ad89-980a20039cda|LspMiscellaneousFilesWorkspace Files Project for /Users/mparq/code/vocabdex_blazor/Program.cs","_vs_kind":2,"_vs_is_miscellaneous":true}],"_vs_defaultIndex":0}}Content-Length: 143
+
+{"jsonrpc":"2.0","id":38,"result":{"kind":"unchanged","resultId":"PublicDocumentPullDiagnosticsHandler(category: DocumentAnalyzerSemantic):1"}}Content-Length: 122
+
+{"jsonrpc":"2.0","id":44,"result":{"kind":"unchanged","resultId":"PublicDocumentPullDiagnosticsHandler(category: enc):1"}}Content-Length: 141
+
+{"jsonrpc":"2.0","id":41,"result":{"kind":"unchanged","resultId":"PublicDocumentPullDiagnosticsHandler(category: DocumentAnalyzerSyntax):1"}}Content-Length: 143
+
+{"jsonrpc":"2.0","id":39,"result":{"kind":"unchanged","resultId":"PublicDocumentPullDiagnosticsHandler(category: DocumentCompilerSemantic):1"}}Content-Length: 125
+
+{"jsonrpc":"2.0","id":40,"result":{"kind":"unchanged","resultId":"PublicDocumentPullDiagnosticsHandler(category: syntax):1"}}Content-Length: 321
+
+{"jsonrpc":"2.0","id":10,"method":"client/registerCapability","params":{"registrations":[{"id":"ea080315-eb88-498d-ab95-0437396794ac","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///Users/mparq/code/vocabdex_blazor","pattern":"**/*{.cs,.cshtml,.razor}"}}]}}]}}Content-Length: 319
+
+{"jsonrpc":"2.0","id":11,"method":"client/registerCapability","params":{"registrations":[{"id":"757c9394-41d5-445b-bad9-83a78b1ebebe","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///Users/mparq/code/vocabdex_blazor","pattern":"vocabdex_blazor.csproj"}}]}}]}}Content-Length: 187
+
+{"jsonrpc":"2.0","method":"window/logMessage","params":{"type":3,"message":"[LanguageServerProjectSystem] UpdateWithNewProject: /Users/mparq/code/vocabdex_blazor/vocabdex_blazor.csproj"}}Content-Length: 214
+
+{"jsonrpc":"2.0","method":"window/logMessage","params":{"type":3,"message":"[LanguageServerProjectSystem] UpdateWithNewProject: ProjectWithTargetFramework /Users/mparq/code/vocabdex_blazor/vocabdex_blazor.csproj"}}Content-Length: 381
+
+{"jsonrpc":"2.0","id":12,"method":"client/registerCapability","params":{"registrations":[{"id":"b95b9d9a-0c5b-47fc-bce9-96e996f2bb20","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///usr/local/share/dotnet/sdk/9.0.100/Sdks/Microsoft.NET.Sdk.Razor/source-generators","pattern":"RazorSourceGenerator.razorencconfig"}}]}}]}}Content-Length: 387
+
+{"jsonrpc":"2.0","id":13,"method":"client/registerCapability","params":{"registrations":[{"id":"a2f30cd7-60f5-481c-aee5-02f5a8a512f9","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///usr/local/share/dotnet/sdk/9.0.100/Sdks/Microsoft.NET.Sdk/codestyle/cs/build/config","pattern":"analysislevelstyle_default.globalconfig"}}]}}]}}Content-Length: 371
+
+{"jsonrpc":"2.0","id":14,"method":"client/registerCapability","params":{"registrations":[{"id":"e085a459-4d84-4b55-81f5-061e0fc3af99","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///Users/mparq/code/vocabdex_blazor/obj/Debug/net9.0","pattern":"vocabdex_blazor.GeneratedMSBuildEditorConfig.editorconfig"}}]}}]}}Content-Length: 381
+
+{"jsonrpc":"2.0","id":15,"method":"client/registerCapability","params":{"registrations":[{"id":"9877e5cc-f04e-42b4-bca6-276041c76239","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///usr/local/share/dotnet/sdk/9.0.100/Sdks/Microsoft.NET.Sdk/analyzers/build/config","pattern":"analysislevel_9_default.globalconfig"}}]}}]}}Content-Length: 164
+
+{"jsonrpc":"2.0","id":16,"method":"razor/provideDynamicFileInfo","params":{"razorDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Components/App.razor"}}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":48,"result":{"items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":49,"result":{"items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":50,"result":{"items":[]}}Content-Length: 37
+
+{"jsonrpc":"2.0","id":52,"result":[]}Content-Length: 476
+
+{"jsonrpc":"2.0","id":56,"result":{"ids":["CS1607","CS0169","CS0414","CS0067","CS0649","CS0656","CS0518","CS5001","CS0028","CS0017","CS7022","CS1556","CS0402","CS1558","CS1555","CS8892","CS0148","CS8078","CS7038","CS0204","CS0570","CS8004","CS8006","CS8005","CS8008","CS4007","CS8178","CS4013","CS1969","CS9026","CS9068","CS9144","CS9148","CS9149","CS9153","CS9154","CS9155","CS9156","CS9158","CS9159","CS9160","CS9163","CS9177","CS9178","CS9207","CS8419","CS8420","CS9217"]}}Content-Length: 476
+
+{"jsonrpc":"2.0","id":58,"result":{"ids":["CS1607","CS0169","CS0414","CS0067","CS0649","CS0656","CS0518","CS5001","CS0028","CS0017","CS7022","CS1556","CS0402","CS1558","CS1555","CS8892","CS0148","CS8078","CS7038","CS0204","CS0570","CS8004","CS8006","CS8005","CS8008","CS4007","CS8178","CS4013","CS1969","CS9026","CS9068","CS9144","CS9148","CS9149","CS9153","CS9154","CS9155","CS9156","CS9158","CS9159","CS9160","CS9163","CS9177","CS9178","CS9207","CS8419","CS8420","CS9217"]}}Content-Length: 476
+
+{"jsonrpc":"2.0","id":53,"result":{"ids":["CS1607","CS0169","CS0414","CS0067","CS0649","CS0656","CS0518","CS5001","CS0028","CS0017","CS7022","CS1556","CS0402","CS1558","CS1555","CS8892","CS0148","CS8078","CS7038","CS0204","CS0570","CS8004","CS8006","CS8005","CS8008","CS4007","CS8178","CS4013","CS1969","CS9026","CS9068","CS9144","CS9148","CS9149","CS9153","CS9154","CS9155","CS9156","CS9158","CS9159","CS9160","CS9163","CS9177","CS9178","CS9207","CS8419","CS8420","CS9217"]}}Content-Length: 476
+
+{"jsonrpc":"2.0","id":51,"result":{"ids":["CS1607","CS0169","CS0414","CS0067","CS0649","CS0656","CS0518","CS5001","CS0028","CS0017","CS7022","CS1556","CS0402","CS1558","CS1555","CS8892","CS0148","CS8078","CS7038","CS0204","CS0570","CS8004","CS8006","CS8005","CS8008","CS4007","CS8178","CS4013","CS1969","CS9026","CS9068","CS9144","CS9148","CS9149","CS9153","CS9154","CS9155","CS9156","CS9158","CS9159","CS9160","CS9163","CS9177","CS9178","CS9207","CS8419","CS8420","CS9217"]}}Content-Length: 476
+
+{"jsonrpc":"2.0","id":55,"result":{"ids":["CS1607","CS0169","CS0414","CS0067","CS0649","CS0656","CS0518","CS5001","CS0028","CS0017","CS7022","CS1556","CS0402","CS1558","CS1555","CS8892","CS0148","CS8078","CS7038","CS0204","CS0570","CS8004","CS8006","CS8005","CS8008","CS4007","CS8178","CS4013","CS1969","CS9026","CS9068","CS9144","CS9148","CS9149","CS9153","CS9154","CS9155","CS9156","CS9158","CS9159","CS9160","CS9163","CS9177","CS9178","CS9207","CS8419","CS8420","CS9217"]}}Content-Length: 476
+
+{"jsonrpc":"2.0","id":57,"result":{"ids":["CS1607","CS0169","CS0414","CS0067","CS0649","CS0656","CS0518","CS5001","CS0028","CS0017","CS7022","CS1556","CS0402","CS1558","CS1555","CS8892","CS0148","CS8078","CS7038","CS0204","CS0570","CS8004","CS8006","CS8005","CS8008","CS4007","CS8178","CS4013","CS1969","CS9026","CS9068","CS9144","CS9148","CS9149","CS9153","CS9154","CS9155","CS9156","CS9158","CS9159","CS9160","CS9163","CS9177","CS9178","CS9207","CS8419","CS8420","CS9217"]}}Content-Length: 476
+
+{"jsonrpc":"2.0","id":47,"result":{"ids":["CS1607","CS0169","CS0414","CS0067","CS0649","CS0656","CS0518","CS5001","CS0028","CS0017","CS7022","CS1556","CS0402","CS1558","CS1555","CS8892","CS0148","CS8078","CS7038","CS0204","CS0570","CS8004","CS8006","CS8005","CS8008","CS4007","CS8178","CS4013","CS1969","CS9026","CS9068","CS9144","CS9148","CS9149","CS9153","CS9154","CS9155","CS9156","CS9158","CS9159","CS9160","CS9163","CS9177","CS9178","CS9207","CS8419","CS8420","CS9217"]}}Content-Length: 476
+
+{"jsonrpc":"2.0","id":54,"result":{"ids":["CS1607","CS0169","CS0414","CS0067","CS0649","CS0656","CS0518","CS5001","CS0028","CS0017","CS7022","CS1556","CS0402","CS1558","CS1555","CS8892","CS0148","CS8078","CS7038","CS0204","CS0570","CS8004","CS8006","CS8005","CS8008","CS4007","CS8178","CS4013","CS1969","CS9026","CS9068","CS9144","CS9148","CS9149","CS9153","CS9154","CS9155","CS9156","CS9158","CS9159","CS9160","CS9163","CS9177","CS9178","CS9207","CS8419","CS8420","CS9217"]}}Content-Length: 476
+
+{"jsonrpc":"2.0","id":59,"result":{"ids":["CS1607","CS0169","CS0414","CS0067","CS0649","CS0656","CS0518","CS5001","CS0028","CS0017","CS7022","CS1556","CS0402","CS1558","CS1555","CS8892","CS0148","CS8078","CS7038","CS0204","CS0570","CS8004","CS8006","CS8005","CS8008","CS4007","CS8178","CS4013","CS1969","CS9026","CS9068","CS9144","CS9148","CS9149","CS9153","CS9154","CS9155","CS9156","CS9158","CS9159","CS9160","CS9163","CS9177","CS9178","CS9207","CS8419","CS8420","CS9217"]}}Content-Length: 174
+
+{"jsonrpc":"2.0","id":17,"method":"razor/provideDynamicFileInfo","params":{"razorDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Components/Pages/Counter.razor"}}}Content-Length: 172
+
+{"jsonrpc":"2.0","id":18,"method":"razor/provideDynamicFileInfo","params":{"razorDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Components/Pages/Error.razor"}}}Content-Length: 171
+
+{"jsonrpc":"2.0","id":19,"method":"razor/provideDynamicFileInfo","params":{"razorDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Components/Pages/Home.razor"}}}Content-Length: 174
+
+{"jsonrpc":"2.0","id":20,"method":"razor/provideDynamicFileInfo","params":{"razorDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Components/Pages/Weather.razor"}}}Content-Length: 167
+
+{"jsonrpc":"2.0","id":21,"method":"razor/provideDynamicFileInfo","params":{"razorDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Components/Routes.razor"}}}Content-Length: 169
+
+{"jsonrpc":"2.0","id":22,"method":"razor/provideDynamicFileInfo","params":{"razorDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Components/_Imports.razor"}}}Content-Length: 178
+
+{"jsonrpc":"2.0","id":23,"method":"razor/provideDynamicFileInfo","params":{"razorDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Components/Layout/MainLayout.razor"}}}Content-Length: 175
+
+{"jsonrpc":"2.0","id":24,"method":"razor/provideDynamicFileInfo","params":{"razorDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Components/Layout/NavMenu.razor"}}}Content-Length: 320
+
+{"jsonrpc":"2.0","id":25,"method":"client/registerCapability","params":{"registrations":[{"id":"9ad8de35-ab8b-4638-9ef3-fbacffd5e374","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///Users/mparq/code/vocabdex_blazor/obj","pattern":"project.assets.json"}}]}}]}}Content-Length: 37
+
+{"jsonrpc":"2.0","id":60,"result":[]}Content-Length: 388
+
+{"jsonrpc":"2.0","id":26,"method":"client/registerCapability","params":{"registrations":[{"id":"77c9c636-cec2-4ebf-b455-094cab92a866","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///usr/local/share/dotnet/packs","pattern":"**/*.dll"}},{"globPattern":{"baseUri":"file:///Users/mparq/.nuget/packages","pattern":"**/*.dll"}}]}}]}}Content-Length: 388
+
+{"jsonrpc":"2.0","id":27,"method":"client/registerCapability","params":{"registrations":[{"id":"eaaf1d06-5bab-4720-be56-b7f53ef18d11","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///usr/local/share/dotnet/packs","pattern":"**/*.dll"}},{"globPattern":{"baseUri":"file:///Users/mparq/.nuget/packages","pattern":"**/*.dll"}}]}}]}}Content-Length: 373
+
+{"jsonrpc":"2.0","id":28,"method":"client/registerCapability","params":{"registrations":[{"id":"d50cce9c-8ba4-4cbe-beff-dc17bbf7d0be","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///usr/local/share/dotnet/sdk/9.0.100/Sdks/Microsoft.NET.Sdk.Web/analyzers/cs","pattern":"Microsoft.AspNetCore.Analyzers.dll"}}]}}]}}Content-Length: 377
+
+{"jsonrpc":"2.0","id":29,"method":"client/registerCapability","params":{"registrations":[{"id":"1f71da98-0f51-46a4-b94a-597c696757e9","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///usr/local/share/dotnet/sdk/9.0.100/Sdks/Microsoft.NET.Sdk.Web/analyzers/cs","pattern":"Microsoft.AspNetCore.Mvc.Analyzers.dll"}}]}}]}}Content-Length: 378
+
+{"jsonrpc":"2.0","id":30,"method":"client/registerCapability","params":{"registrations":[{"id":"ff4afe10-d309-47c8-9ec6-3976b79a1d13","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///usr/local/share/dotnet/sdk/9.0.100/Sdks/Microsoft.NET.Sdk/analyzers","pattern":"Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll"}}]}}]}}Content-Length: 371
+
+{"jsonrpc":"2.0","id":31,"method":"client/registerCapability","params":{"registrations":[{"id":"820ac462-d648-4f01-8477-a494fb0f41df","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///usr/local/share/dotnet/sdk/9.0.100/Sdks/Microsoft.NET.Sdk/analyzers","pattern":"Microsoft.CodeAnalysis.NetAnalyzers.dll"}}]}}]}}Content-Length: 395
+
+{"jsonrpc":"2.0","id":32,"method":"client/registerCapability","params":{"registrations":[{"id":"826d43cf-f6ab-42cb-b721-e72f9c01ee27","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":{"baseUri":"file:///Users/mparq/.vscode-insiders/extensions/ms-dotnettools.csharp-2.58.20-darwin-arm64/.razor","pattern":"Microsoft.CodeAnalysis.Razor.Compiler.dll"}}]}}]}}Content-Length: 6802
+
+{"jsonrpc":"2.0","method":"workspace/projectConfigurationTelemetry","params":{"ProjectId":"c450abd4f7d84c9a","SessionId":"-148519061","OutputKind":0,"ProjectCapabilities":["GenerateDocumentationFile","CSharp","Managed","ReferencesFolder","LanguageService","RelativePathDerivedDefaultNamespace","AssemblyReferences","COMReferences","ProjectReferences","SharedProjectReferences","OutputGroups","AllTargetOutputGroups","VisualStudioWellKnownOutputGroups","SingleFileGenerators","DeclaredSourceItems","UserSourceItems","SupportsComputeRunCommand","CrossPlatformExecutable","NativeAOT","SupportsHotReload","Pack","NetSdkOCIImageBuild","DotNetCoreRazor","DotNetCoreRazorConfiguration","WebNestingDefaults","SupportsTypeScriptNuGet","DotNetCoreWeb","AspNetCore","Web","AppServicePublish","AspNetCoreInProcessHosting","SupportHierarchyContextSvc","DynamicDependentFile","DynamicFileNesting"],"TargetFrameworks":["net9.0"],"References":["662a08abe4f2c4ad","1569e1791bd355a2","ab2164f6aaa7fcd6","4526c326cfdb5604","c986c0d6a2326aaa","66e123d08b811a52","5875395891096b3","51ea55be2ae92eeb","5376363c9c9b4bf0","a7d949a938dd7af9","a3d5d9dde8253cf3","2da96184a3504cee","1d41913b65697ce8","919bad439ee8ef1a","95f1fe956dc95adf","320f966f5331a16b","fe315a8241db9288","6078fe079f843b0","4c9e85bf4ed3f49c","39907ce9376af7a1","fee2da1872f71567","41178b5b86f23369","d6d205f9886d8959","72275d7f66e92213","34b91f0ddcb60633","d7a173ed2786b09c","630a48eeafb8535f","fdad328e95ebc20c","6f13ad611d0b533c","7cc8abc1130726ea","78e99ff0a31f28dd","1b7a739ce338bff4","4d3f3f64c36486cb","4e3040f6dac05362","9c8249d4eb6c7e45","a45a6bdcc63ac4ff","e5bbf86a8a939d2e","e378496da325fb90","c7ea4d8e777514ee","8b3756231a0ed1f","d0e9ed2e970ece11","3b2b3001a8230502","8d6eef08ad3040f9","6a79688032d32f77","15804efe44fdf455","fe2e2dec309624b6","a9f4182694026e4","958b4a89c0b58e74","38817b158cfcc3e","cc183d4987d1ffad","e015987b061de78d","9472fe37a53f88f4","71246eea89309b9b","b00c21a6d1e6225a","f0bc08e13bf5e560","6515892546309152","2235ef604c67f5b","16907ac2e0b19abf","f6f39e61c04f325a","ee30ffc719cf5e18","3ac009dab26828dd","90a8190b776dd34","8107eeb5ac157054","1dd85f281f357cbb","177d3c24a13ff8d8","f9fd1ecb8358aacf","edb1c40ab7c29361","e8d882dd1e0ffb26","1acc9855d1403c27","8833cf2e06384379","3cdb5ae7a832e314","f06c2bdea6d0aba8","ab63f359322156fb","4c08b65021856d85","db66061360412716","d6439b0e314f1987","c6888e7cd6856948","b853998d31665fe4","d0cb09b278e13684","15bfdf153afb2fc1","78dbd3127a341bd0","a7374a6f43428dc6","5009aa3140b85237","709da5a8397222ab","642b27251fac5587","6e7caf7cc9304c2d","248e5d342e2232d7","f9b57385e04dcef1","8c727dd7349beb8c","5fdba11d1937be74","f8bdeed4de17cd68","b9261013f494a18f","7a9e73afe95b321f","b501b17f1d400441","be2335fb2d1e8c27","fc6c2558a1435271","f11d97b5537ece0a","b2446a911bb3a8b7","fb27e7afbc99e7cf","694f96094cf823a8","dd96763c9d2b5abe","d4fc1b0d7a67d94b","3943cc894ba95c9c","8d874fd54a0007c5","77a4c12f0c8da142","18a7d80fbe162750","280161470b6f954a","fce8cdb51a2b268f","c68bfcce9e88f226","249d699829808d23","5af7083a710903fd","13e077d646b07da3","6cce217983a8ca68","b7051818f5a4e33a","2a60cabad66451c2","26195daa41c4435b","b67e57b2f32426c","346e273179e32edb","bd16be7f15eb9049","2f6095cd9d0eb227","1740bd99d1938249","68d6735660c4c1f3","996afe9758338810","d4501a953f6d8354","4623fbe4e4e4059d","475e51f6d633979b","2053cbda2c34d1e3","aad34c108f65a5d","c1f03ea03e02548c","3cd5401c2317f556","e94bc0d8d3c37c4","9f2628d0552c6279","f3aac462225ecbfc","755d6518180861ee","b27b33963545fef8","683f0b9f58b617f8","b04d1a92c03aa393","740a41f35e38e687","a650b002a55ee732","8bb25cdfa9f58d95","ca01f9c6c9519128","a7db6d4c13eb109a","4787ec450370cdc","faae3cd2329a5f23","b136c9057d0eac41","a4be57a67913d9f2","c2f7e51423366080","9221249557edf7da","ac08b9147e6c6cc1","fc8f31a851b2f1e","3d1fab7a1546aa70","75c42701c310d265","6eac5906d797823f","51b6b65db45d8317","977562ede61122d1","6f06be6c7dad3d57","782a823a2d8cd40","13bbf2cbcdb96469","a8b1d9f359d7b4f","8db448e27f0bad1b","5faa84ffcc646d16","3dd9e1e713ce28c1","bc70a3688f03b546","3e025539204a5d59","2eb7ee5c97f6992d","12bec27505c61c10","65e9cc7358ddee2e","7df5bfe00323a6a8","ce3f444652eead51","feebdde9a00fe94b","22d24df113118e04","6a8ada60e30e6abf","6001a9b860f7e43","e94e5ff7b2eb39a9","46b5412910b12f1a","eac4975c939bd705","a777367473e5f95c","f67433e0978efe89","d574426ce261f3cd","2620772be337bacb","ce4b86769789bfd2","afe098e2b8eb2364","4bca77302b767821","b42e3bf9c2caf9d","11d6a5981dd09f1d","2528657f041a0f71","1a4910e7928d2be4","385f6cb9a1a92341","8a6a053fd546c4b9","4bd5d70d9487a7","546da94a433dd46b","c8cd67501180cdb3","99380cc3f9cb0f62","e9ad645088056795","2b71ac54faa4d900","6d26f5b6d581bb7a","e99748daf45287f7","88a79e3fbc9be5a5","baed534980001b3e","a094f278ebd28638","f02b6f1120327ed5","1fdb3be137e7c8ab","d8d06e6254ff9a8","7a37191fa2429c0","db2085d40be0c6b","732e2f41e1ec328f","cc0b8a0dc4b5cc17","b3ec78066692ce40","b633596fb5206911","b1c086ddba588d7f","3935c25fc587591d","5db9cd2d6d302594","1fe2caf02ff5116","d1e401c8e175f133","d795c4b069f42de2","28889d355be716fb","987004758afb653e","a93a13f245d3dbf5","c2c7e5dd6bcf2f46","f40e391e11837c28","1f1effdb4f95fef","4b3556ed143bb1a1","990c07b3a694f061","16f3b3c6aa66dbea","bbc2c7fb9307d0f8","cae96c695fa0a849","23af2e185bf7f884","10682f5180926917","531413e8ae8921e9","cbb2e2956b8bc5a1","693159958e045249","abb76040f918f212","2978ebe3fa017619","d753dc831058d377","5d5ab2fae13c7cd7","6f36e9e201c8abbc","2c2215284100c1bc","abef39459b5f8089","58b2ccb5d5268768","f4c238ed95a4c9e0","463559064b820a89","f46a5248555641f3","31a917d25f0111b0","d9a0d90fcf36b125","f707ec8ff0716b6a","d31ae060adc0cf68","b740561cbe999190","6f6cd086b29443f","3e2b84419c2678fe","16aa5cd16608904e","88efed4970ce8fb","525af1cb4f8c1ef","82365a1d92723ea2","f9081118726c671d","1dc6ba4b51a92fe2","480fcc9a46d59829","96ae799a9cd65a64","1f0a5acc2009b69e","53da3fcaf9d4a664","762862983c40286f","7143cd55e6267a10","9c4f1e8060c475b4","8e57667a7b3f694f","5641b1bfbef8f076","c074fd9cba688aec","6b8a7cd56172fed1","5d25704a6a0be6ed","7de0d61ed8a595ec","85c2a8db5105888","ec2dac2bf194d54a","baae63d2bc6dd501","6e18d5f5513ced07","ecc917c3c9b5c475","3e60a289d38463fa","3297b865f846bd0a","34cfcce7d574a410","762c57508db7a1c2","81016cf6be9235ed","66f49a742a35a86","96f5a81e8df6f19c","bc2ea691e56496f8","5d957776a3bc8463","4fcdd50549f35f69","1613d6b76156e26a","609f5396c0534146","31be6951d8a1de6e","d373f3c4566c70c6","b42e1bda5a17dc0e","3017ef0c38e2d837","92e480fdaacc79e0","ffb314483a45fa40","3159cfd5553fa1b8","6a5eaa177b0b8d54","add48a46678bd09d","c70f2a1b237f229d","3beb376886d63c97","363b07840a344182","f638dfb632c7bb3e","4fc1e02f10ba6dcc","7f7e058ceeba44c4","76fdeb10eb04a251","c229c6a3986d545b"],"FileExtensions":["884108092","-949835833","-1257278712","942067057","738306980","1018430095","1691207745"],"FileCounts":[2,19,1,9,22,1,6],"SdkStyleProject":true}}Content-Length: 196
+
+{"jsonrpc":"2.0","method":"window/logMessage","params":{"type":3,"message":"[LanguageServerProjectSystem] Successfully completed load of /Users/mparq/code/vocabdex_blazor/vocabdex_blazor.csproj"}}Content-Length: 163
+
+{"jsonrpc":"2.0","method":"window/logMessage","params":{"type":3,"message":"[LanguageServerProjectSystem] Completed (re)load of all projects in 00:00:02.4211534"}}Content-Length: 80
+
+{"jsonrpc":"2.0","method":"workspace/projectInitializationComplete","params":[]}Content-Length: 279
+
+{"jsonrpc":"2.0","id":61,"result":{"_vs_projectContexts":[{"_vs_label":"vocabdex_blazor (net9.0)","_vs_id":"5c32ae79-24a0-41b8-8307-5bdfefc15fbe|/Users/mparq/code/vocabdex_blazor/vocabdex_blazor.csproj ($net9.0)","_vs_kind":2,"_vs_is_miscellaneous":false}],"_vs_defaultIndex":0}}Content-Length: 362
+
+{"jsonrpc":"2.0","id":62,"result":[{"projectPath":"/Users/mparq/code/vocabdex_blazor/vocabdex_blazor.csproj","outputPath":"/Users/mparq/code/vocabdex_blazor/bin/Debug/net9.0/vocabdex_blazor.dll","projectName":"vocabdex_blazor.csproj (net9.0) - /Users/mparq/code/vocabdex_blazor/vocabdex_blazor.csproj","targetsDotnetCore":true,"isExe":true,"solutionPath":null}]}Content-Length: 76
+
+{"jsonrpc":"2.0","id":33,"method":"workspace/inlayHint/refresh","params":[]}Content-Length: 47
+
+{"jsonrpc":"2.0","id":63,"result":{"items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":65,"result":{"items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":64,"result":{"items":[]}}Content-Length: 77
+
+{"jsonrpc":"2.0","id":34,"method":"workspace/diagnostic/refresh","params":[]}Content-Length: 81
+
+{"jsonrpc":"2.0","id":35,"method":"workspace/semanticTokens/refresh","params":[]}Content-Length: 75
+
+{"jsonrpc":"2.0","id":36,"method":"workspace/codeLens/refresh","params":[]}Content-Length: 39
+
+{"jsonrpc":"2.0","id":67,"result":null}Content-Length: 39
+
+{"jsonrpc":"2.0","id":75,"result":null}Content-Length: 128
+
+{"jsonrpc":"2.0","id":74,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: enc):2","items":[]}}Content-Length: 39
+
+{"jsonrpc":"2.0","id":73,"result":null}Content-Length: 39
+
+{"jsonrpc":"2.0","id":72,"result":null}Content-Length: 131
+
+{"jsonrpc":"2.0","id":70,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: syntax):2","items":[]}}Content-Length: 37
+
+{"jsonrpc":"2.0","id":76,"result":[]}Content-Length: 37
+
+{"jsonrpc":"2.0","id":78,"result":[]}Content-Length: 995
+
+{"jsonrpc":"2.0","id":77,"result":[{"position":{"line":2,"character":43},"label":"args:","kind":2,"textEdits":[{"range":{"start":{"line":2,"character":43},"end":{"line":2,"character":43}},"newText":"args: "}],"paddingRight":true,"data":{"ResultId":2,"ListIndex":0,"SyntaxVersion":"2024-11-27T00:45:50.6870530Z-10025-0","Range":{"start":{"line":0,"character":0},"end":{"line":30,"character":0}},"DisplayAllOverride":false,"TextDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Program.cs"}}},{"position":{"line":15,"character":28},"label":"errorHandlingPath:","kind":2,"textEdits":[{"range":{"start":{"line":15,"character":28},"end":{"line":15,"character":28}},"newText":"errorHandlingPath: "}],"paddingRight":true,"data":{"ResultId":2,"ListIndex":1,"SyntaxVersion":"2024-11-27T00:45:50.6870530Z-10025-0","Range":{"start":{"line":0,"character":0},"end":{"line":30,"character":0}},"DisplayAllOverride":false,"TextDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Program.cs"}}}]}Content-Length: 919
+
+{"jsonrpc":"2.0","id":69,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: DocumentCompilerSemantic):2","items":[{"range":{"start":{"line":0,"character":6},"end":{"line":0,"character":21}},"severity":1,"code":"CS0246","codeDescription":{"href":"https://msdn.microsoft.com/query/roslyn.query?appId=roslyn\u0026k=k(CS0246)"},"message":"The type or namespace name \u0027vocabdex_blazor\u0027 could not be found (are you missing a using directive or an assembly reference?)","tags":[2147483642,2147483645]},{"range":{"start":{"line":26,"character":23},"end":{"line":26,"character":26}},"severity":1,"code":"CS0246","codeDescription":{"href":"https://msdn.microsoft.com/query/roslyn.query?appId=roslyn\u0026k=k(CS0246)"},"message":"The type or namespace name \u0027App\u0027 could not be found (are you missing a using directive or an assembly reference?)","tags":[2147483642,2147483645]}]}}Content-Length: 37
+
+{"jsonrpc":"2.0","id":79,"result":[]}Content-Length: 147
+
+{"jsonrpc":"2.0","id":71,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: DocumentAnalyzerSyntax):2","items":[]}}Content-Length: 125
+
+{"jsonrpc":"2.0","id":66,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: ):1","items":[]}}Content-Length: 1226
+
+{"jsonrpc":"2.0","id":81,"result":{"data":[0,0,5,15,0,0,6,15,8,0,0,15,1,21,0,0,1,10,8,0,0,10,1,44,0,2,0,3,15,0,0,4,7,8,0,0,8,1,21,0,0,2,14,2,0,0,14,1,21,0,0,1,13,13,1,0,13,1,44,0,0,1,4,15,0,0,4,1,44,0,0,1,1,44,0,2,0,33,17,0,1,0,7,8,0,0,7,1,21,0,0,1,8,9,0,0,8,1,21,0,0,1,18,27,0,0,18,1,44,0,0,1,1,44,0,1,4,1,21,0,0,1,30,27,0,0,30,1,44,0,0,1,1,44,0,0,1,1,44,0,2,0,3,15,0,0,4,3,8,0,0,4,1,21,0,0,2,7,8,0,0,7,1,21,0,0,1,5,13,0,0,5,1,44,0,0,1,1,44,0,0,1,1,44,0,4,0,39,17,0,1,0,2,24,0,0,3,1,44,0,0,1,1,21,0,0,1,3,8,0,0,3,1,21,0,0,1,11,9,0,0,11,1,21,0,0,1,13,27,0,0,13,1,44,0,0,1,1,44,0,0,1,1,44,0,1,0,1,44,0,1,4,3,8,0,0,3,1,21,0,0,1,19,27,0,0,19,1,44,0,0,1,8,18,0,0,8,1,44,0,0,2,20,7,0,0,20,1,44,0,0,2,4,15,0,0,4,1,44,0,0,1,1,44,0,1,4,127,17,0,1,4,3,8,0,0,3,1,21,0,0,1,7,27,0,0,7,1,44,0,0,1,1,44,0,0,1,1,44,0,1,0,1,44,0,2,0,3,8,0,0,3,1,21,0,0,1,19,27,0,0,19,1,44,0,0,1,1,44,0,0,1,1,44,0,3,0,3,8,0,0,3,1,21,0,0,1,14,27,0,0,14,1,44,0,0,1,1,44,0,0,1,1,44,0,2,0,3,8,0,0,3,1,21,0,0,1,15,27,0,0,15,1,44,0,0,1,1,44,0,0,1,1,44,0,1,0,3,8,0,0,3,1,21,0,0,1,18,27,0,0,18,1,44,0,0,1,3,8,0,0,3,1,44,0,0,1,1,44,0,0,1,1,44,0,1,4,1,21,0,0,1,30,27,0,0,30,1,44,0,0,1,1,44,0,0,1,1,44,0,2,0,3,8,0,0,3,1,21,0,0,1,3,13,0,0,3,1,44,0,0,1,1,44,0,0,1,1,44,0]}}Content-Length: 37
+
+{"jsonrpc":"2.0","id":82,"result":[]}Content-Length: 995
+
+{"jsonrpc":"2.0","id":83,"result":[{"position":{"line":2,"character":43},"label":"args:","kind":2,"textEdits":[{"range":{"start":{"line":2,"character":43},"end":{"line":2,"character":43}},"newText":"args: "}],"paddingRight":true,"data":{"ResultId":3,"ListIndex":0,"SyntaxVersion":"2024-11-27T00:45:50.6870530Z-10025-0","Range":{"start":{"line":0,"character":0},"end":{"line":30,"character":0}},"DisplayAllOverride":false,"TextDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Program.cs"}}},{"position":{"line":15,"character":28},"label":"errorHandlingPath:","kind":2,"textEdits":[{"range":{"start":{"line":15,"character":28},"end":{"line":15,"character":28}},"newText":"errorHandlingPath: "}],"paddingRight":true,"data":{"ResultId":3,"ListIndex":1,"SyntaxVersion":"2024-11-27T00:45:50.6870530Z-10025-0","Range":{"start":{"line":0,"character":0},"end":{"line":30,"character":0}},"DisplayAllOverride":false,"TextDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Program.cs"}}}]}Content-Length: 76
+
+{"jsonrpc":"2.0","id":37,"method":"workspace/inlayHint/refresh","params":[]}Content-Length: 47
+
+{"jsonrpc":"2.0","id":85,"result":{"items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":84,"result":{"items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":86,"result":{"items":[]}}Content-Length: 465
+
+{"jsonrpc":"2.0","id":68,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: DocumentAnalyzerSemantic):2","items":[{"range":{"start":{"line":0,"character":0},"end":{"line":0,"character":33}},"severity":4,"code":"IDE0005","codeDescription":{"href":"https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005"},"message":"Using directive is unnecessary.","tags":[2147483641,2147483643,2147483640,2147483645,1]}]}}Content-Length: 125
+
+{"jsonrpc":"2.0","id":80,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: ):2","items":[]}}Content-Length: 37
+
+{"jsonrpc":"2.0","id":88,"result":[]}Content-Length: 125
+
+{"jsonrpc":"2.0","id":87,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: ):3","items":[]}}Content-Length: 995
+
+{"jsonrpc":"2.0","id":89,"result":[{"position":{"line":2,"character":43},"label":"args:","kind":2,"textEdits":[{"range":{"start":{"line":2,"character":43},"end":{"line":2,"character":43}},"newText":"args: "}],"paddingRight":true,"data":{"ResultId":4,"ListIndex":0,"SyntaxVersion":"2024-11-27T00:45:50.6870530Z-10025-0","Range":{"start":{"line":0,"character":0},"end":{"line":30,"character":0}},"DisplayAllOverride":false,"TextDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Program.cs"}}},{"position":{"line":15,"character":28},"label":"errorHandlingPath:","kind":2,"textEdits":[{"range":{"start":{"line":15,"character":28},"end":{"line":15,"character":28}},"newText":"errorHandlingPath: "}],"paddingRight":true,"data":{"ResultId":4,"ListIndex":1,"SyntaxVersion":"2024-11-27T00:45:50.6870530Z-10025-0","Range":{"start":{"line":0,"character":0},"end":{"line":30,"character":0}},"DisplayAllOverride":false,"TextDocument":{"uri":"file:///Users/mparq/code/vocabdex_blazor/Program.cs"}}}]}Content-Length: 125
+
+{"jsonrpc":"2.0","id":90,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: ):4","items":[]}}Content-Length: 81
+
+{"jsonrpc":"2.0","id":38,"method":"workspace/semanticTokens/refresh","params":[]}Content-Length: 125
+
+{"jsonrpc":"2.0","id":91,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: ):5","items":[]}}Content-Length: 125
+
+{"jsonrpc":"2.0","id":92,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: ):6","items":[]}}Content-Length: 125
+
+{"jsonrpc":"2.0","id":93,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: ):7","items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":95,"result":{"items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":96,"result":{"items":[]}}Content-Length: 47
+
+{"jsonrpc":"2.0","id":97,"result":{"items":[]}}Content-Length: 125
+
+{"jsonrpc":"2.0","id":94,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: ):8","items":[]}}Content-Length: 125
+
+{"jsonrpc":"2.0","id":98,"result":{"kind":"full","resultId":"PublicDocumentPullDiagnosticsHandler(category: ):9","items":[]}}

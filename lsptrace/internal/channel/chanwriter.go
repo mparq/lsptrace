@@ -4,12 +4,8 @@ type Writer struct {
 	out chan []byte
 }
 
-func NewWriter() *Writer {
-	return &Writer{}
-}
-
-func (r *Writer) Out(out chan []byte) {
-	r.out = out
+func NewWriter(out chan []byte) *Writer {
+	return &Writer{out}
 }
 
 func (r *Writer) Write(p []byte) (n int, err error) {
@@ -17,6 +13,9 @@ func (r *Writer) Write(p []byte) (n int, err error) {
 		panic("chanio.writer: Out channel must be set before calling Write")
 	}
 	// TODO: need to handle error?
-	r.out <- p
+	go func() {
+		// send to channel but don't block write
+		r.out <- p
+	}()
 	return n, err
 }

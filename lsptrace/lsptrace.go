@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"lsptrace/internal"
+	"lsptrace/internal/pipeline"
 	"net"
 	"os"
 	"os/exec"
@@ -14,6 +15,8 @@ import (
 	"strings"
 	"syscall"
 )
+
+var _ internal.LSPTrace // TODO: remove
 
 const (
 	HELP_MESSAGE = `
@@ -159,50 +162,17 @@ func main() {
 	defer serv_conn.Close()
 	log.Println("Connected to original pipe.")
 
-	c := make(chan *internal.RawLSPMessage)
-	sc := make(chan *internal.RawLSPMessage)
-	tc := make(chan internal.LSPTrace, 5)
-	stc := make(chan internal.LSPTrace, 5)
-
-	clientIntercept := internal.NewInterceptor(c)
-	serverIntercept := internal.NewInterceptor(sc)
-	_ = clientIntercept // remove
-	_ = serverIntercept // remove
-
 	reqMap := internal.NewRequestMap()
 	clientTracer := internal.NewLSPTracer("client", reqMap)
 	serverTracer := internal.NewLSPTracer("server", reqMap)
-	clientTracer.In(c)
-	clientTracer.Out(tc)
-	serverTracer.In(sc)
-	serverTracer.Out(stc)
 
-	go clientTracer.Run()
-	go serverTracer.Run()
-
-	go func() {
-		for trace := range tc {
-			log.Println(trace)
-		}
-	}()
-	go func() {
-		for trace := range stc {
-			log.Println(trace)
-		}
-	}()
-
-	// errbuf := NewPrefixWriter("!<-", f)
-	// Non-blockingly echo command output to terminal
-	// go copyWith2Dest(stdin, f, os.Stdin)
-	// NOTE: can write raw json rpc to log by using log.Writer() in io.MultiWriter args
-	go io.Copy(io.MultiWriter(serv_conn, clientIntercept), conn)
-	//go copyWith2Dest(os.Stdout, f, stdout)
-	go io.Copy(io.MultiWriter(conn, serverIntercept), serv_conn)
-	// go copyWith2Dest(os.Stderr, f, stderr)
-	// go io.Copy(io.MultiWriter(os.Stderr, errbuf), stderr)
-
-	// go io.Copy(f, in)
-	// go io.Copy(f, out)
+	dcf, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/client.raw", os.O_WRONLY|os.O_CREATE|os.O_SYNC, 0666)
+	dsf, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/server.raw", os.O_WRONLY|os.O_CREATE|os.O_SYNC, 0666)
+	clientPipeline := pipeline.NewPipeline(conn, io.MultiWriter(serv_conn, dcf), f, *clientTracer)
+	serverPipeline := pipeline.NewPipeline(serv_conn, io.MultiWriter(conn, dsf), f, *serverTracer)
+	// TODO: handle closing
+	_ = clientPipeline.Run()
+	_ = serverPipeline.Run()
 
 	execCmd.Wait()
 }
