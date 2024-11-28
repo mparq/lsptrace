@@ -3,6 +3,8 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
+	"flag"
 	"io"
 	"log"
 	"lsptrace/internal"
@@ -12,19 +14,39 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 )
 
-var _ internal.LSPTrace // TODO: remove
-
 const (
 	HELP_MESSAGE = `
 Usage:
-  $ ./lsp-trace [command] [...command-args]
+  $ ./lsptrace [command] [...command-args]
 
-  $ ./lsp-trace -h      Display this help message.
+  $ ./lsptrace -h      Display this help message.
 `
+)
+
+var (
+	// Output file which the program will write lsp traces to
+	// while processing lsp communication
+	TRACE_OUTPUT = os.Getenv("LSPTRACE_TRACE_OUTPUT")
+	// Output file for debug logs. Due to the nature of the program
+	// stdout is not usable for logging.
+	DEBUG_OUTPUT = os.Getenv("LSPTRACE_DEBUG_OUTPUT")
+	// Command to run the language server e.g. `dotnet <roslyndllpath>``.
+	// If this is not set, the program will assume its first argument is the
+	// command to run. If the cmd is space-separated then it will be split
+	// and the first part will be used as command in exec.Command and the
+	// other parts will be pre-pended to the args passed to lsptrace
+	LANGUAGE_SERVER_CMD = os.Getenv("LSPTRACE_LANGUAGE_SERVER_CMD")
+	// '1' means that the lsp communication will start with named pipe negotation
+	// meaning that the server will create a named pipe and then pass a single
+	// json message with 'pipeName' over stdout which the client should listen for
+	// and then connect to - from that point all communication will go through the
+	// pipe instead of stdin/stdout
+	HANDLE_NAMED_PIPES, _ = strconv.ParseBool(os.Getenv("LSPTRACE_HANDLE_NAMED_PIPES"))
 )
 
 func checkError(err error) {
@@ -33,10 +55,14 @@ func checkError(err error) {
 	}
 }
 
-func setupLogger() (func(), error) {
+func setupLogger(filePath string) (func(), error) {
 	// TODO: debug file should be parameterized.
-	debugF, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/debug.log", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
+	debugF, err := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
+	if err != nil {
+		return nil, err
+	}
 	log.SetOutput(debugF)
+	log.Printf("setup logger to write to: %s\n", filePath)
 	return func() {
 		debugF.Close()
 	}, err
@@ -54,121 +80,63 @@ func handleInterrupt(cleanup func()) {
 	}()
 }
 
-// check if args suggest that command is being run from vscode
-// HACK: this is for now checking just on --telemetryLevel
-// which is passed by vscode-sharp when running roslyn language server
-func isVsCodeCommand(args []string) {
-	for _, arg := range args {
-		if strings.Contains(arg, "--telemetryLevel") {
-		}
-	}
-}
-
 func main() {
 	if len(os.Args) < 2 || os.Args[1] == "-h" {
 		log.Fatal(HELP_MESSAGE)
 	}
 
-	roslynDll := ""
-	if o, found := os.LookupEnv("LSPTRACE_ROSLYN_LS_DLL"); found {
-		roslynDll = o
+	// configuration
+	flag.StringVar(&DEBUG_OUTPUT, "debug_output", DEBUG_OUTPUT, "filepath to write debug logs to.")
+	flag.StringVar(&TRACE_OUTPUT, "trace_output", TRACE_OUTPUT, "filepath to write lsp traces to.")
+	flag.BoolVar(&HANDLE_NAMED_PIPES, "handle_named_pipes", HANDLE_NAMED_PIPES, "whether lsp communication will use named pipes. if true, lsptrace will expect an initial named pipe handshake.")
+	flag.Parse()
+
+	if len(TRACE_OUTPUT) < 1 {
+		log.Fatalf("LSPTRACE_TRACE_OUTPUT or --trace_output must be set. %s | %s | %s", DEBUG_OUTPUT, TRACE_OUTPUT, HANDLE_NAMED_PIPES)
 	}
 
-	logCloser, err := setupLogger()
+	// setup resources
+
+	// setup tmp dir
+	// TODO: temporary sockets should be removed after
+	// the log file probably shouldn't be removed.
+	tmpDir, err := os.MkdirTemp("", "lsp-trace-proxy")
+	checkError(err)
+
+	// setup logger
+	debugPath := filepath.Join(tmpDir, "debug.log")
+	if len(DEBUG_OUTPUT) > 0 {
+		debugPath = DEBUG_OUTPUT
+	}
+	logCloser, err := setupLogger(debugPath)
+	checkError(err)
 	defer logCloser()
+
+	// open trace file
+	traceOut, err := os.OpenFile(TRACE_OUTPUT, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatal(errors.Join(errors.New("error opening trace output file"), err))
+	}
+	defer traceOut.Close()
+
 	// TODO: handle interrupts properly and cleanup
 	handleInterrupt(nil)
 
 	log.Printf("debug log opened...\n")
 
-	// cmd := os.Args[1]
-	cmd := "dotnet"
-	roslynDll = filepath.Join(
-		"/Users/mparq/code",
-		"ext",
-		"roslyn",
-		"artifacts",
-		"bin",
-		"Microsoft.CodeAnalysis.LanguageServer",
-		"Debug",
-		"net8.0",
-		"Microsoft.CodeAnalysis.LanguageServer.dll",
-	)
-
-	// for vscode, this binary is expected to run the language server and we are just passed the args
-	// as opposed to the 1st arg being the ls command to run
-	// args := append([]string{roslynDll}, os.Args[2:]...)
-	args := append([]string{roslynDll}, os.Args[1:]...)
-	log.Printf(strings.Join(args, " ") + "\n")
-	execCmd := exec.Command(cmd, args...)
-
+	// setup command
+	execCmd := setupLanguageServerCommand()
 	log.Printf("execCmd created.: %s\n", execCmd.String())
 
-	// in named pipe flow, expectation is that we start server
-	// the server will respond with a json message over stdout {"pipeName": "..."}
-	// the client should internal.this message and then connect to the named pipe in the message
-	// from that point, all client/server lsp comms go through the pipe
+	pipes, err := createLspPipes(execCmd, tmpDir, HANDLE_NAMED_PIPES)
+	checkError(err)
+	defer pipes.Close()
 
-	stdout, err := execCmd.StdoutPipe()
-	checkError(err)
-
-	// Start command
-	err = execCmd.Start()
-	checkError(err)
-
-	f, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/out.lsptrace", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
-	checkError(err)
-	defer f.Close()
-
-	// initially sent from roslyn server via stdout to be read by client
-	// {"pipeName":"/var/folders/hs/1q81fggs11x5rn03t860n0n40000gn/T/713a9e7b.sock"}
-	pipeName, err := PollForInitialPipeMsg(stdout)
-	checkError(err)
-	log.Printf("Found initial pipeName: %s\n", pipeName)
-
-	// create a new intercept pipe which will be sent to client to connect to instead
-	tmpDir, err := os.MkdirTemp("", "lsp-trace-proxy")
-	checkError(err)
-	log.Printf("Created tmp dir for intercept socket: %s", tmpDir)
-	interceptPipeName := filepath.Join(tmpDir, filepath.Base(pipeName))
-	l, err := net.Listen("unix", interceptPipeName)
-	checkError(err)
-	defer func() {
-		l.Close()
-		os.RemoveAll(tmpDir)
-	}()
-	log.Printf("Created intercept pipe name: %s\n", interceptPipeName)
-	log.Printf("Created intercept pipe listener\n")
-	interceptPipeMsg := PipeMsg{
-		PipeName: interceptPipeName,
-	}
-	interceptJson, err := json.Marshal(interceptPipeMsg)
-	checkError(err)
-	log.Printf("Sending intercept pipe message to original client\n")
-	log.Printf("%s\n", interceptJson)
-	os.Stdout.Write(interceptJson)
-	os.Stdout.WriteString("\n")
-
-	// after client reads pipeName message it should connect on the corresponding pipe
-	log.Println("Listening for connections on intercept pipe...")
-	conn, err := l.Accept()
-	checkError(err)
-	log.Println("Accepted connection on intercept pipe.")
-
-	// connect to the original pipe which the language server broadcast that it is listening on
-	log.Println("Connecting to original pipe...")
-	serv_conn, err := net.Dial("unix", pipeName)
-	checkError(err)
-	defer serv_conn.Close()
-	log.Println("Connected to original pipe.")
-
+	cIn, cOut, sIn, sOut := pipes.CIn(), pipes.COut(), pipes.SIn(), pipes.SOut()
 	reqMap := internal.NewRequestMap()
 	lspTracer := internal.NewLSPTracer(reqMap)
-
-	dcf, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/client.raw", os.O_WRONLY|os.O_CREATE|os.O_SYNC, 0666)
-	dsf, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/server.raw", os.O_WRONLY|os.O_CREATE|os.O_SYNC, 0666)
-	clientPipeline := pipeline.NewPipeline(conn, io.MultiWriter(serv_conn, dcf), f, lspTracer, "client")
-	serverPipeline := pipeline.NewPipeline(serv_conn, io.MultiWriter(conn, dsf), f, lspTracer, "server")
+	clientPipeline := pipeline.NewPipeline(cOut, sIn, traceOut, lspTracer, "client")
+	serverPipeline := pipeline.NewPipeline(sOut, cIn, traceOut, lspTracer, "server")
 	// TODO: handle closing
 	_ = clientPipeline.Run()
 	_ = serverPipeline.Run()
@@ -176,22 +144,188 @@ func main() {
 	execCmd.Wait()
 }
 
-func OpenPipeFileHandles(pipeName string) (*os.File, *os.File, error) {
-	log.Println("Opening write file...")
-	wf, err := os.OpenFile(pipeName, os.O_WRONLY|os.O_CREATE|os.O_SYNC, 0777)
-	if err != nil {
-		return nil, nil, err
+func createLspPipes(execCmd *exec.Cmd, tmpDir string, handleNamedPipes bool) (lspPipe LSPPipe, err error) {
+	if handleNamedPipes {
+		lspPipe = NewNamedPipesLSPPipe(execCmd, tmpDir)
+	} else {
+		lspPipe = NewStdInOutLSPPipe(execCmd)
 	}
-	log.Println("Successfully opened write file... Opening read file...")
-	f, err := os.OpenFile(pipeName, os.O_CREATE|os.O_RDONLY, os.ModeNamedPipe)
+	err = lspPipe.Setup()
 	if err != nil {
-		return nil, nil, err
+		err = errors.Join(errors.New("could not set up named pipes lsp communication"), err)
+		return nil, err
 	}
-	log.Println("Successfully opened read file.")
-	return f, wf, nil
+	return lspPipe, err
+
 }
 
-func PollForInitialPipeMsg(pipeSender io.Reader) (string, error) {
+type LSPPipe interface {
+	Setup() error
+	CIn() io.Writer
+	COut() io.Reader
+	SIn() io.Writer
+	SOut() io.Reader
+	Close()
+}
+
+type StdInOutLSPPipe struct {
+	execCmd *exec.Cmd
+	sIn     io.WriteCloser
+	sOut    io.ReadCloser
+}
+
+func NewStdInOutLSPPipe(execCmd *exec.Cmd) *StdInOutLSPPipe {
+	return &StdInOutLSPPipe{execCmd: execCmd}
+}
+
+func (p *StdInOutLSPPipe) Setup() error {
+	sIn, err := p.execCmd.StdinPipe()
+	if err != nil {
+		return err
+	}
+	p.sIn = sIn
+	sOut, err := p.execCmd.StdoutPipe()
+	if err != nil {
+		return err
+	}
+	p.sOut = sOut
+	err = p.execCmd.Start()
+	if err != nil {
+		err = errors.Join(errors.New("error starting lsp command"), err)
+		return err
+	}
+	return nil
+}
+
+// note that "client in" pipe is the stdout of this program
+// and vice-versa the "client out" pipe is the stdin of this program
+func (p *StdInOutLSPPipe) CIn() io.Writer {
+	return os.Stdout
+}
+
+func (p *StdInOutLSPPipe) COut() io.Reader {
+	return os.Stdin
+}
+
+func (p *StdInOutLSPPipe) SIn() io.Writer {
+	return p.sIn
+}
+
+func (p *StdInOutLSPPipe) SOut() io.Reader {
+	return p.sOut
+}
+
+func (p *StdInOutLSPPipe) Close() {
+	p.sIn.Close()
+	p.sOut.Close()
+}
+
+type NamedPipesLSPPipe struct {
+	execCmd           *exec.Cmd
+	pipeDir           string
+	interceptListener net.Listener
+	clientConnection  net.Conn
+	serverConnection  net.Conn
+}
+
+func NewNamedPipesLSPPipe(execCmd *exec.Cmd, pipeDir string) *NamedPipesLSPPipe {
+	return &NamedPipesLSPPipe{execCmd: execCmd, pipeDir: pipeDir}
+}
+
+func (p *NamedPipesLSPPipe) Setup() error {
+	// in named pipe flow, expectation is that we start server
+	// the server will respond with a json message over stdout {"pipeName": "..."}
+	// the client should internal.this message and then connect to the named pipe in the message
+	// from that point, all client/server lsp comms go through the pipe
+
+	stdout, err := p.execCmd.StdoutPipe()
+	if err != nil {
+		err = errors.Join(errors.New("could not get stdout pipe of lsp command"), err)
+		return err
+	}
+	// Start command
+	err = p.execCmd.Start()
+	if err != nil {
+		err = errors.Join(errors.New("could not start lsp command"), err)
+		return err
+	}
+	// initially sent from roslyn server via stdout to be read by client
+	// {"pipeName":"/var/folders/hs/1q81fggs11x5rn03t860n0n40000gn/T/713a9e7b.sock"}
+	pipeName, err := pollForInitialPipeMsg(stdout)
+	if err != nil {
+		err = errors.Join(errors.New("error polling for initial pipe message"), err)
+		return err
+	}
+	log.Printf("Found initial pipeName: %s\n", pipeName)
+	// create a new intercept pipe which will be sent to client to connect to instead
+	interceptPipeName := filepath.Join(p.pipeDir, filepath.Base(pipeName))
+	l, err := net.Listen("unix", interceptPipeName)
+	p.interceptListener = l
+	if err != nil {
+		err = errors.Join(errors.New("could not setup intercept pipe"), err)
+		return err
+	}
+	log.Printf("Created intercept pipe name: %s\n", interceptPipeName)
+	log.Printf("Created intercept pipe listener\n")
+	interceptPipeMsg := PipeMsg{
+		PipeName: interceptPipeName,
+	}
+	interceptJson, err := json.Marshal(interceptPipeMsg)
+	if err != nil {
+		err = errors.Join(errors.New("could not create intercept pipe msg json"), err)
+		return err
+	}
+	log.Printf("Sending intercept pipe message to original client\n")
+	log.Printf("%s\n", interceptJson)
+	os.Stdout.Write(interceptJson)
+	os.Stdout.WriteString("\n")
+
+	// after client reads pipeName message it should connect on the corresponding pipe
+	// TODO: add timeout
+	log.Println("Listening for connections on intercept pipe...")
+	conn, err := l.Accept()
+	p.clientConnection = conn
+	if err != nil {
+		err = errors.Join(errors.New("error listening for connection from client on created intercept pipe"), err)
+		return err
+	}
+	log.Println("Accepted connection on intercept pipe.")
+
+	// connect to the original pipe which the language server broadcast that it is listening on
+	log.Println("Connecting to original pipe...")
+	serv_conn, err := net.Dial("unix", pipeName)
+	p.serverConnection = serv_conn
+	if err != nil {
+		err = errors.Join(errors.New("unable to connect to original pipe given from server"), err)
+		return err
+	}
+	log.Println("Connected to original pipe.")
+	return nil
+}
+
+func (p *NamedPipesLSPPipe) CIn() io.Writer {
+	return p.clientConnection
+}
+
+func (p *NamedPipesLSPPipe) COut() io.Reader {
+	return p.clientConnection
+}
+
+func (p *NamedPipesLSPPipe) SIn() io.Writer {
+	return p.serverConnection
+}
+
+func (p *NamedPipesLSPPipe) SOut() io.Reader {
+	return p.serverConnection
+}
+
+func (p *NamedPipesLSPPipe) Close() {
+	p.serverConnection.Close()
+	p.clientConnection.Close()
+	p.interceptListener.Close()
+}
+
+func pollForInitialPipeMsg(pipeSender io.Reader) (string, error) {
 	outScanner := bufio.NewScanner(pipeSender)
 
 	var pipeMsg PipeMsg
@@ -219,34 +353,26 @@ type PipeMsg struct {
 	PipeName string `json:"pipeName"`
 }
 
-type PrefixWriter struct {
-	buf    []byte
-	prefix string
-}
-
-func NewPrefixWriter(prefix string) *PrefixWriter {
-	return &PrefixWriter{buf: make([]byte, 0), prefix: prefix}
-}
-
-func (w *PrefixWriter) Write(p []byte) (n int, err error) {
-	if len(p) > 0 {
-		// Prepend '<-' to the prefix writer
-		w.buf = append(w.buf, w.prefix...)
-
-		// Append the input bytes to the buffer
-		w.buf = append(w.buf, p...)
-
-		log.Printf("%s %s\n", w.prefix, w.buf)
+func setupLanguageServerCommand() *exec.Cmd {
+	var cmd string
+	var args []string
+	cliArgs := flag.Args()
+	if LANGUAGE_SERVER_CMD == "" {
+		log.Println("language server command not specified. assumed to be first argument.")
+		cmd = cliArgs[0]
+		args = cliArgs[1:]
+	} else {
+		// for roslyn we should configure LSPTRACE_LANGUAGE_SERVER_CMD = "dotnet <path-to-roslyn-dll>"
+		// when running vscode
+		log.Printf("language server command specified. lsptrace will run %s with given args\n", LANGUAGE_SERVER_CMD)
+		cmdParts := strings.Split(LANGUAGE_SERVER_CMD, " ")
+		cmd = cmdParts[0]
+		if len(cmdParts) > 1 {
+			args = append(cmdParts[1:], cliArgs...)
+		} else {
+			args = cliArgs
+		}
 	}
-
-	return len(p), nil
-}
-
-func (w *PrefixWriter) Read(p []byte) (n int, err error) {
-	if n := copy(p, w.buf); n > 0 {
-		w.buf = w.buf[n:]
-	}
-	log.Printf("%s %d bytes read\n", w.prefix, n)
-	return n, nil
-
+	execCmd := exec.Command(cmd, args...)
+	return execCmd
 }
