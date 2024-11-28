@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 	"testing"
-	"testing/iotest"
 )
 
 var (
@@ -25,8 +24,8 @@ func TestPipeline(t *testing.T) {
 	out := new(bytes.Buffer)
 	traceOut := new(bytes.Buffer)
 	reqMap := internal.NewRequestMap()
-	lspTracer := internal.NewLSPTracer("client", reqMap)
-	p := NewPipeline(in, out, traceOut, *lspTracer)
+	lspTracer := internal.NewLSPTracer(reqMap)
+	p := NewPipeline(in, out, traceOut, lspTracer, "client")
 	done := p.Run()
 	<-done
 	t.Logf("out: %s", string(out.Bytes()))
@@ -39,15 +38,14 @@ func TestDoublePipeline(t *testing.T) {
 	in := strings.NewReader(clientInput)
 	out := new(bytes.Buffer)
 	traceOut := new(bytes.Buffer)
-	lspTracer := internal.NewLSPTracer("client", reqMap)
-	p := NewPipeline(in, out, traceOut, *lspTracer)
+	lspTracer := internal.NewLSPTracer(reqMap)
+	p := NewPipeline(in, out, traceOut, lspTracer, "client")
 	done := p.Run()
 
 	serverIn := strings.NewReader(serverInput)
 	sOut := new(bytes.Buffer)
 	sTraceOut := new(bytes.Buffer)
-	slspTracer := internal.NewLSPTracer("server", reqMap)
-	sp := NewPipeline(serverIn, sOut, sTraceOut, *slspTracer)
+	sp := NewPipeline(serverIn, sOut, sTraceOut, lspTracer, "server")
 	sdone := sp.Run()
 
 	go func() {
@@ -65,14 +63,10 @@ func TestBigPipeline(t *testing.T) {
 	reqMap := internal.NewRequestMap()
 	in, _ := os.Open("../testdata/client.raw")
 	// TODO: don't write out file in test
-	outF, _ := os.OpenFile("../testdata/client_out.raw", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
-	out := iotest.NewWriteLogger("out", outF)
-	traceF, _ := os.OpenFile("../testdata/client_trace.raw", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
-	traceOut := iotest.NewWriteLogger("trace", traceF)
-	lspTracer := internal.NewLSPTracer("client", reqMap)
-	p := NewPipeline(in, out, traceOut, *lspTracer)
+	out, _ := os.OpenFile("../testdata/client_out.raw", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	trace, _ := os.OpenFile("../testdata/client_trace.raw", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	lspTracer := internal.NewLSPTracer(reqMap)
+	p := NewPipeline(in, out, trace, lspTracer, "client")
 	done := p.Run()
-
 	<-done
-
 }

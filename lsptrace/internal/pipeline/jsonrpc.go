@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"lsptrace/internal"
 	"strconv"
@@ -29,6 +30,8 @@ type JsonRpcStage struct {
 	gotHeader         bool
 	nextContentLength int
 	scanBuf           *bytes.Buffer
+
+	readingChunk bool
 }
 
 func NewJsonRpcStage() *JsonRpcStage {
@@ -40,11 +43,17 @@ func (t *JsonRpcStage) Run(in chan []byte) chan *internal.RawLSPMessage {
 	out := make(chan *internal.RawLSPMessage)
 	go func() {
 		for read := range in {
+			if t.readingChunk {
+				panic("unexpected: reading chunk in parallel")
+			}
+			t.readingChunk = true
+			log.Printf("pre scanbuf write: jsonrpc input: %s\n", string(read))
 			// write to scan buffer
 			t.scanBuf.Write(read)
 			var err error
 			var more bool
 			for {
+				log.Printf("post scanbuf write: attempt next")
 				// try to read as much as possible
 				more, err = t.next(out)
 				if err != nil || !more {
@@ -54,6 +63,7 @@ func (t *JsonRpcStage) Run(in chan []byte) chan *internal.RawLSPMessage {
 			if err != nil {
 				log.Printf("interceptor:run Error parsing next %s \n", err)
 			}
+			t.readingChunk = false
 		}
 		// close out channel after in closes
 		close(out)
@@ -72,7 +82,8 @@ func (t *JsonRpcStage) next(out chan *internal.RawLSPMessage) (bool, error) {
 		if nl < 0 {
 			return false, nil
 		}
-		// read including the \r\n\r\n
+		log.Printf("found header: %s\n", string(t.scanBuf.Bytes()[0:nl]))
+		// read including the last \r\n\r\n (nl+4)
 		readBuf := make([]byte, nl+4)
 		nr, err := t.scanBuf.Read(readBuf)
 		if err != nil || nr != nl+4 {
@@ -80,23 +91,25 @@ func (t *JsonRpcStage) next(out chan *internal.RawLSPMessage) (bool, error) {
 			return false, err
 		}
 
-		// split header section excluding the \r\n\r\n
+		// split header section by \r\n excluding the last \r\n\r\n (nl)
 		headers := strings.Split(string(readBuf[0:nl]), "\r\n")
 		contentLength := 0
 		for _, header := range headers {
-			parts := strings.Split(header, ": ")
 			// HACK: handle garbage in front of content-length header which is seen in wild
-			if strings.HasSuffix(parts[0], "Content-Length") {
-				contentLength, err = strconv.Atoi(parts[1])
+			clIndex := strings.Index(header, "Content-Length: ")
+			if clIndex >= 0 {
+				clValue := header[clIndex+len("Content-Length: "):]
+				contentLength, err = strconv.Atoi(clValue)
 				if err != nil {
+					log.Printf("error converting content-length value [%s]: %s", clValue, err)
 					break
 				}
 			}
 		}
 		if contentLength == 0 {
-			err = EREADCONTENTLENGTH
-			log.Printf("jsonrpc: headers: %s\n", string(readBuf[0:nl]))
-			return false, err
+			err = errors.Join(err, EREADCONTENTLENGTH)
+			panic(fmt.Sprintf("err:%s === headers:%s", err, string(readBuf[0:nl])))
+			// return false, err
 		}
 
 		t.nextContentLength = contentLength
@@ -105,6 +118,7 @@ func (t *JsonRpcStage) next(out chan *internal.RawLSPMessage) (bool, error) {
 
 	case t.nextContentLength > 0:
 		// read content
+		log.Printf("scanBuf length: %v\n", t.scanBuf.Len())
 		if t.scanBuf.Len() >= t.nextContentLength {
 			readBuf := make([]byte, t.nextContentLength)
 			t.scanBuf.Read(readBuf)
@@ -113,6 +127,7 @@ func (t *JsonRpcStage) next(out chan *internal.RawLSPMessage) (bool, error) {
 			lspMessage := new(internal.RawLSPMessage)
 			err := json.Unmarshal(readBuf, lspMessage)
 			if err != nil {
+				log.Printf("unmarshall: err on %s", string(readBuf))
 				err = errors.Join(err, EPARSE)
 				t.nextContentLength = 0
 				t.gotHeader = false

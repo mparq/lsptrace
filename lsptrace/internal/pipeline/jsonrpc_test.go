@@ -1,6 +1,7 @@
 package pipeline
 
 import (
+	"bytes"
 	"io"
 	"os"
 	"testing"
@@ -56,5 +57,36 @@ func TestChunkedReads(t *testing.T) {
 	}()
 	for msg := range out {
 		t.Log(msg)
+	}
+}
+
+func TestRaw(t *testing.T) {
+	in := make(chan []byte)
+	i := NewJsonRpcStage()
+	out := i.Run(in)
+	f, _ := os.Open("../testdata/client.raw")
+	go func() {
+		defer close(in)
+		buf := make([]byte, 8096)
+		s := 0
+		for {
+			nr, err := f.Read(buf[s:])
+			if err != nil {
+				break
+			}
+			if nr > 0 {
+				e := s + nr
+				cloneBuf := bytes.Clone(buf[s:e])
+				in <- cloneBuf
+				if e >= len(buf) {
+					s = 0
+				} else {
+					s = e
+				}
+			}
+		}
+	}()
+	for msg := range out {
+		t.Logf("jsonrpcrawtest: %s", msg)
 	}
 }

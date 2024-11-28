@@ -163,13 +163,12 @@ func main() {
 	log.Println("Connected to original pipe.")
 
 	reqMap := internal.NewRequestMap()
-	clientTracer := internal.NewLSPTracer("client", reqMap)
-	serverTracer := internal.NewLSPTracer("server", reqMap)
+	lspTracer := internal.NewLSPTracer(reqMap)
 
 	dcf, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/client.raw", os.O_WRONLY|os.O_CREATE|os.O_SYNC, 0666)
 	dsf, err := os.OpenFile("/Users/mparq/code/lsp-trace-proxy/server.raw", os.O_WRONLY|os.O_CREATE|os.O_SYNC, 0666)
-	clientPipeline := pipeline.NewPipeline(conn, io.MultiWriter(serv_conn, dcf), f, *clientTracer)
-	serverPipeline := pipeline.NewPipeline(serv_conn, io.MultiWriter(conn, dsf), f, *serverTracer)
+	clientPipeline := pipeline.NewPipeline(conn, io.MultiWriter(serv_conn, dcf), f, lspTracer, "client")
+	serverPipeline := pipeline.NewPipeline(serv_conn, io.MultiWriter(conn, dsf), f, lspTracer, "server")
 	// TODO: handle closing
 	_ = clientPipeline.Run()
 	_ = serverPipeline.Run()
