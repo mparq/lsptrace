@@ -43,12 +43,17 @@ func MessageKind(lspMessage *RawLSPMessage) string {
 }
 
 type LSPTrace struct {
-	MessageKind string        `json:"msgKind"`
-	SentFrom    string        `json:"from"`
-	Method      *string       `json:"method,omitempty"`
-	Id          *int64        `json:"id,omitempty"`
-	Timestamp   time.Time     `json:"timestamp"`
-	Message     RawLSPMessage `json:"msg"`
+	// LSP message kind: 'request' | 'response' | 'error' | 'notification'
+	MessageKind string `json:"msgKind"`
+	// Where the message was sent from 'client' | 'server'
+	SentFrom string `json:"from"`
+	// The LSP method. Empty for notifications, will be looked up for lsp responses
+	Method *string `json:"method,omitempty"`
+	Id     *int64  `json:"id,omitempty"`
+	// UTC timestamp the message was received by the tracer
+	Timestamp time.Time `json:"timestamp"`
+	// The parsed raw json message ('params' and 'result' will be here)
+	Message RawLSPMessage `json:"msg"`
 }
 
 // Convert Raw LSP JSON body into LSPTrace.

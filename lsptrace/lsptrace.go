@@ -40,6 +40,10 @@ var (
 	// command to run. If the cmd is space-separated then it will be split
 	// and the first part will be used as command in exec.Command and the
 	// other parts will be pre-pended to the args passed to lsptrace
+	// IMPORTANT: If LSPTRACE_LANGUAGE_SERVER_CMD is set then lsptrace will
+	// ignore parsing command line flags, because the caller of the command
+	// may expect to pass flags directly to the exe. in this case, all
+	// lsptrace configuration should be set through environment vars
 	LANGUAGE_SERVER_CMD = os.Getenv("LSPTRACE_LANGUAGE_SERVER_CMD")
 	// '1' means that the lsp communication will start with named pipe negotation
 	// meaning that the server will create a named pipe and then pass a single
@@ -47,6 +51,7 @@ var (
 	// and then connect to - from that point all communication will go through the
 	// pipe instead of stdin/stdout
 	HANDLE_NAMED_PIPES, _ = strconv.ParseBool(os.Getenv("LSPTRACE_HANDLE_NAMED_PIPES"))
+	CLI_ARGS              = os.Args[1:]
 )
 
 func checkError(err error) {
@@ -89,10 +94,15 @@ func main() {
 	flag.StringVar(&DEBUG_OUTPUT, "debug_output", DEBUG_OUTPUT, "filepath to write debug logs to.")
 	flag.StringVar(&TRACE_OUTPUT, "trace_output", TRACE_OUTPUT, "filepath to write lsp traces to.")
 	flag.BoolVar(&HANDLE_NAMED_PIPES, "handle_named_pipes", HANDLE_NAMED_PIPES, "whether lsp communication will use named pipes. if true, lsptrace will expect an initial named pipe handshake.")
-	flag.Parse()
+
+	if len(LANGUAGE_SERVER_CMD) <= 0 {
+		// only parse flags from command line if LANGUAGE_SERVER_CMD isn't explicitly set
+		flag.Parse()
+		CLI_ARGS = flag.Args()
+	}
 
 	if len(TRACE_OUTPUT) < 1 {
-		log.Fatalf("LSPTRACE_TRACE_OUTPUT or --trace_output must be set. %s | %s | %s", DEBUG_OUTPUT, TRACE_OUTPUT, HANDLE_NAMED_PIPES)
+		log.Fatalf("LSPTRACE_TRACE_OUTPUT or --trace_output must be set\n")
 	}
 
 	// setup resources
@@ -356,11 +366,10 @@ type PipeMsg struct {
 func setupLanguageServerCommand() *exec.Cmd {
 	var cmd string
 	var args []string
-	cliArgs := flag.Args()
 	if LANGUAGE_SERVER_CMD == "" {
 		log.Println("language server command not specified. assumed to be first argument.")
-		cmd = cliArgs[0]
-		args = cliArgs[1:]
+		cmd = CLI_ARGS[0]
+		args = CLI_ARGS[1:]
 	} else {
 		// for roslyn we should configure LSPTRACE_LANGUAGE_SERVER_CMD = "dotnet <path-to-roslyn-dll>"
 		// when running vscode
@@ -368,9 +377,9 @@ func setupLanguageServerCommand() *exec.Cmd {
 		cmdParts := strings.Split(LANGUAGE_SERVER_CMD, " ")
 		cmd = cmdParts[0]
 		if len(cmdParts) > 1 {
-			args = append(cmdParts[1:], cliArgs...)
+			args = append(cmdParts[1:], CLI_ARGS...)
 		} else {
-			args = cliArgs
+			args = CLI_ARGS
 		}
 	}
 	execCmd := exec.Command(cmd, args...)
