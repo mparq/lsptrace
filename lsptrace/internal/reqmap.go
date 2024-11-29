@@ -38,5 +38,7 @@ func (m *RequestMap) Pop(reqid int64) string {
 }
 
 func (m *RequestMap) String() string {
+	m.rMutex.Lock()
+	defer m.rMutex.Unlock()
 	return fmt.Sprintf("%+v\n", m.rMap)
 }
