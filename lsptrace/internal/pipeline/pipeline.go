@@ -60,13 +60,11 @@ func (p *Pipeline) RunInputStage(rawIn io.Reader, rawOut io.Writer) (out chan []
 			if nr > 0 {
 				e := s + nr
 				// TODO: error case
-				log.Printf("pre: writing buf out: %s", string(buf[s:e]))
 				// NOTE: do we need to clone here? or should consuming channels
 				// be expected to block this?
 				outClone := bytes.Clone(buf[s:e])
 				rawOut.Write(outClone)
 				out <- outClone
-				log.Printf("post: writing buf out: %s", string(buf[s:e]))
 				if e >= len(buf) {
 					s = 0
 				} else {
