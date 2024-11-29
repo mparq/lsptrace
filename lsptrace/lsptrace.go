@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"os/user"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -116,16 +117,20 @@ func main() {
 	// setup logger
 	debugPath := filepath.Join(tmpDir, "debug.log")
 	if len(DEBUG_OUTPUT) > 0 {
-		debugPath = DEBUG_OUTPUT
+		debugPath, err = resolveLocalPath(DEBUG_OUTPUT)
+		checkError(err)
 	}
 	logCloser, err := setupLogger(debugPath)
 	checkError(err)
 	defer logCloser()
 
 	// open trace file
-	traceOut, err := os.OpenFile(TRACE_OUTPUT, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0666)
+	tracePath, err := resolveLocalPath(TRACE_OUTPUT)
+	checkError(err)
+	traceOut, err := os.OpenFile(tracePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0666)
 	if err != nil {
-		log.Fatal(errors.Join(errors.New("error opening trace output file"), err))
+		err = errors.Join(errors.New("error opening trace output file"), err)
+		checkError(err)
 	}
 	defer traceOut.Close()
 
@@ -384,4 +389,16 @@ func setupLanguageServerCommand() *exec.Cmd {
 	}
 	execCmd := exec.Command(cmd, args...)
 	return execCmd
+}
+
+func resolveLocalPath(path string) (string, error) {
+	if strings.HasPrefix(path, "~/") {
+		usr, err := user.Current()
+		if err != nil {
+			err = errors.Join(errors.New("error resolving user home path"), err)
+			return "", err
+		}
+		path = filepath.Join(usr.HomeDir, path[2:])
+	}
+	return path, nil
 }
