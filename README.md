@@ -3,7 +3,7 @@
 Easy tracing of LSP communication for diffing and debugging purposes.
 
 - [x] tracer: `lsptrace <language-server-exe>` in place of `<language-server-exe>` to collect lsptrace logs
-- [ ] viewer: load lsptrace log file and quickly search/filter and have ui which helps grok the flow of lsp communication in the trace.
+- [x] viewer: see [lsptrace.nvim](https://github.com/mparq/lsptrace.nvim)
 
 (example lsptrace output)
 ```
