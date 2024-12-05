@@ -43,3 +43,30 @@ func TestParseReqResponse(t *testing.T) {
 	}
 
 }
+func TestErrorMatchesRequest(t *testing.T) {
+	reqMap := NewRequestMap()
+	tracer := NewLSPTracer(reqMap)
+	id := new(int64)
+	*id = 64
+	var method *string
+	method = new(string)
+	*method = "initialize"
+	t.Logf("addr of method: %v", method)
+	clientTrace := tracer.MakeTrace(&RawLSPMessage{Id: id, Method: method, Params: json.RawMessage{}}, "client")
+	id = new(int64)
+	*id = 70
+	method = new(string)
+	*method = "other-method"
+	t.Logf("addr of method after re-assign: %v", method)
+	otherTrace := tracer.MakeTrace(&RawLSPMessage{Id: id, Method: method, Params: []byte("{}")}, "client")
+	id = new(int64)
+	*id = int64(64)
+	serverTrace := tracer.MakeTrace(&RawLSPMessage{Id: id, Error: json.RawMessage{}}, "server")
+	t.Log(clientTrace)
+	t.Log(otherTrace)
+	t.Log(serverTrace)
+	if *clientTrace.Method != *serverTrace.Method {
+		t.Fatal("Method should be matched on error trace to the corresponding request trace.")
+	}
+
+}

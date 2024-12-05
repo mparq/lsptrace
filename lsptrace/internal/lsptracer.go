@@ -23,7 +23,7 @@ func (t *LSPTracer) MakeTrace(msg *RawLSPMessage, sentFrom string) (trace *LSPTr
 	switch trace.MessageKind {
 	case "request":
 		t.saveRequestMethod(trace, sentFrom)
-	case "response":
+	case "response", "error":
 		method := t.popRequestMethod(trace, sentFrom)
 		trace.Method = &method
 	}
