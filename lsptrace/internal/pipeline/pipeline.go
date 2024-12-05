@@ -3,10 +3,9 @@ package pipeline
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/mparq/lsptrace/internal"
 	"io"
 	"log"
-	"lsptrace/internal"
-	// "lsptrace/internal/channel"
 )
 
 type Pipeline struct {

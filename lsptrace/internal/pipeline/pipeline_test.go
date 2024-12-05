@@ -2,7 +2,7 @@ package pipeline
 
 import (
 	"bytes"
-	"lsptrace/internal"
+	"github.com/mparq/lsptrace/internal"
 	"os"
 	"strings"
 	"testing"

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/mparq/lsptrace/internal"
 	"log"
-	"lsptrace/internal"
 	"strconv"
 	"strings"
 )
